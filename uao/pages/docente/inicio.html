@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sesión en vivo · Portal Docente · UAO Attendance</title>
+<link rel="stylesheet" href="../../css/styles.css">
+</head>
+<body>
+<div class="app">
+  <nav class="side">
+    <div>
+      <div class="brand-top side-brand" style="padding:4px 6px 12px">
+        <div class="uao-logo-box"><div class="uao-logo-circle">uao</div></div>
+        <div class="brand-text">
+          <b>UAO Attendance</b>
+          <small>Universidad Autónoma de Occidente</small>
+        </div>
+      </div>
+
+      <div class="side-section-label">MENÚ PRINCIPAL</div>
+      <div class="side-nav">
+        <a href="inicio.html" class="on"><span class="nav-left">⊞ Inicio</span></a>
+        <a href="registro-manual.html"><span class="nav-left">📷 Lista manual</span></a>
+        <a href="bitacora.html"><span class="nav-left">🕒 Historial / Bitácora</span></a>
+        <a href="excusas.html"><span class="nav-left">📄 Excusas</span><span class="nav-count" id="nav-exc-count">3</span></a>
+      </div>
+    </div>
+
+    <div class="side-bottom">
+      <div class="period-box">
+        <span>📅</span>
+        <div>
+          <small>Periodo actual</small>
+          <b>2026-1</b>
+        </div>
+      </div>
+      <a class="out" href="../../index.html"><span class="nav-left">↪ Cerrar sesión</span></a>
+    </div>
+  </nav>
+
+  <div class="main-col">
+    <header class="topbar">
+      <div class="vista-switch">
+        <span>Vista</span>
+        <select id="switch-vista" aria-label="Cambiar vista de rol">
+          <option value="docente" selected>Docente</option>
+          <option value="estudiante">Estudiante</option>
+          <option value="director">Director</option>
+        </select>
+      </div>
+      <button class="bell-btn" type="button" title="Notificaciones" onclick="location.href='excusas.html'">🔔</button>
+      <div class="user-pill">
+        <span class="avatar">SG</span>
+        <div class="user-pill-info">
+          <b>Sandra Guañarita</b>
+          <small>Docente</small>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-head">
+        <div>
+          <span class="date-eyebrow">MARTES, 12 DE MAYO</span>
+          <h1>Buenos días, Sandra</h1>
+          <p class="sub">Tu clase está lista. Inicia el registro cuando tus estudiantes estén en el aula.</p>
+        </div>
+        <div class="active-subject-picker">
+          <label for="sel-asignatura-docente">ASIGNATURA ACTIVA</label>
+          <select id="sel-asignatura-docente">
+            <option value="isw1" selected>Ingeniería de Software I · G01</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="session-bar">
+        <div class="session-bar-left">
+          <div class="session-icon-box">🖥️</div>
+          <div>
+            <small style="font-size:10px;color:#94A3B8;text-transform:uppercase;letter-spacing:0.06em;font-weight:700">SESIÓN ACTUAL</small>
+            <div class="session-bar-title">
+              <b>Ingeniería de Software I</b>
+              <span class="live-pill" id="badge-estado-sesion">● EN VIVO</span>
+            </div>
+            <small style="color:#94A3B8;font-size:12px">Salón Y3-04 · 8:00–10:00 a. m.</small>
+          </div>
+        </div>
+
+        <div class="session-tabs">
+          <a href="inicio.html" class="on">Registro rápido</a>
+          <a href="registro-manual.html">Lista manual</a>
+          <a href="excusas.html">Excusas <span class="badge-red" id="tab-exc-count">3</span></a>
+        </div>
+      </div>
+
+      <div class="banner bad" id="alerta-red-docente" role="alert" hidden></div>
+
+      <div class="two">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <div>
+              <span class="date-eyebrow" style="margin-bottom:2px">ACCESO DE ESTUDIANTES</span>
+              <b style="font-size:18px" id="titulo-acceso-pin">Escanea o ingresa el PIN</b>
+            </div>
+            <span class="badge b-ok">🛡️ Seguro</span>
+          </div>
+
+          <div class="qr-pin-Stage">
+            <div class="qr-box" id="qr-container"></div>
+
+            <div class="pin-stage-center">
+              <div class="pin-label">PIN DINÁMICO</div>
+              <div class="pin" id="pin">----</div>
+              <small class="muted" id="sub-estado-pin" style="display:block;margin-top:4px">Se renueva automáticamente</small>
+
+              <div class="token-ring-box">
+                <div class="ring-circle">
+                  <span id="count">60</span>
+                  <small>seg</small>
+                </div>
+                <div>
+                  <b style="font-size:13px;display:block" id="token-status-title">Token activo</b>
+                  <small class="muted" style="font-size:11px" id="token-status-sub">Expira en menos de un minuto</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:12px;margin-top:6px;flex-wrap:wrap;gap:8px">
+            <small class="muted">📷 Los estudiantes pueden usar cualquiera de los dos métodos.</small>
+            <button type="button" class="btn sec sm" id="btn-modo-proyector" style="width:auto">Modo proyector ›</button>
+          </div>
+
+          <div class="sim-box">
+            <b>Verificación M02 (Continuidad ante corte de red · DEF-02):</b>
+            <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap">
+              <button class="btn neutral sm" id="btn-simular-corte-red" type="button" style="width:auto">Simular corte de conexión de red local</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="display:flex;flex-direction:column;justify-content:space-between">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <div>
+                <span class="date-eyebrow" style="margin-bottom:2px">ASISTENCIA EN TIEMPO REAL</span>
+                <b style="font-size:18px" id="pres">19 de 30 presentes</b>
+              </div>
+              <span class="badge b-ok" id="pres-pct">63%</span>
+            </div>
+
+            <div class="bar"><i id="fill" style="width:63%"></i></div>
+
+            <div style="display:flex;justify-content:space-between;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin:14px 0 4px">
+              <span>ÚLTIMOS REGISTROS</span>
+              <span>HORA</span>
+            </div>
+
+            <div id="ultimos"></div>
+          </div>
+
+          <a class="btn neutral" href="registro-manual.html" style="margin-top:14px">Ver lista completa &nbsp;›</a>
+        </div>
+      </div>
+
+      <div class="stats-footer-bar">
+        <div class="stats-group">
+          <div class="stat-item">
+            <span class="stat-icon" style="background:var(--ok-bg);color:var(--ok)">✓</span>
+            <div>
+              <b id="stat-pres">19</b>
+              <small>Presentes</small>
+            </div>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon" style="background:var(--warnbg);color:var(--warn)">🕒</span>
+            <div>
+              <b id="stat-nov">0</b>
+              <small>Con novedad</small>
+            </div>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon" style="background:#F1F5F9;color:var(--muted)">👥</span>
+            <div>
+              <b id="stat-sin">11</b>
+              <small>Sin registrar</small>
+            </div>
+          </div>
+          <span class="muted" id="resumen" style="font-size:12px"></span>
+        </div>
+
+        <div class="actions">
+          <a class="btn link" href="novedad.html">+ Registrar novedad</a>
+          <button class="btn sec danger" id="cerrar-sesion-asistencia" type="button" style="width:auto">Cerrar sesión (M04)</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<script src="../../js/main.js"></script>
+</body>
+</html>

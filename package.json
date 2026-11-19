@@ -1,0 +1,13 @@
+{
+  "name": "uao-attendance",
+  "version": "1.2.0",
+  "description": "UAO Attendance - Sistema de Control de Asistencia con Registro Multiple y Portal Docente (Modelo C4 Completo)",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "test": "node test_runner.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
