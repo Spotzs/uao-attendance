@@ -14,7 +14,7 @@ function validarCredencialesSSO(db, { username, password, rol }) {
     return {
       status: 503,
       ok: false,
-      msg: 'HTTP 503: Servicio de Autenticación Institucional UAO fuera de línea. Use el método alterno de contingencia en aula (RF-01).'
+      msg: 'Servicio de Autenticación Institucional UAO temporalmente fuera de servicio. Use el método alterno de registro en aula.'
     };
   }
 
@@ -79,7 +79,7 @@ function validarMatriculaRegistroAcademico(db, { estudianteCodigo, asignaturaId,
   if (!row) {
     return {
       matriculado: false,
-      msg: `Error RF-11: Estudiante (${estudianteCodigo}) no matriculado en este grupo académico (${asignaturaId.toUpperCase()}-${grupo.toUpperCase()}). Registro rechazado.`
+      msg: `Estudiante (${estudianteCodigo}) no matriculado en este grupo académico (${asignaturaId.toUpperCase()}-${grupo.toUpperCase()}). Registro rechazado.`
     };
   }
   return { matriculado: true };

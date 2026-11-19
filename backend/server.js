@@ -26,7 +26,7 @@ app.post('/api/auth/login', (req, res) => {
   }
   dbMod.registrarAuditoria({
     autor: `${result.user.nombre} (${result.user.rol})`,
-    accion: 'Autenticación SSO (M01)',
+    accion: 'Autenticación SSO',
     valorAnterior: 'Anónimo',
     valorNuevo: 'Autenticado',
     detalle: `Ingreso exitoso al portal de ${result.user.rol} mediante SSO Institucional UAO.`
@@ -149,7 +149,7 @@ app.get('/api/bitacora', (req, res) => {
 app.delete('/api/bitacora', (req, res) => {
   return res.status(403).json({
     ok: false,
-    msg: 'PROHIBIDO (RF-13 / DEF-12): La bitácora de auditoría es estrictamente inmutable y no permite eliminación de eventos.'
+    msg: 'PROHIBIDO: La bitácora de auditoría es estrictamente inmutable y no permite eliminación de eventos.'
   });
 });
 

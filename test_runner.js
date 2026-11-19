@@ -53,9 +53,9 @@ for (const file of htmlFiles) {
 }
 
 const expectedIds = [
-  'login', 'roles', 'user', 'pass', 'lmsg', 'reset', 'sim-bad-login', 'sim-sso-down',
+  'login', 'roles', 'user', 'pass', 'lmsg', 'toggle-reg-usuario', 'btn-crear-usuario',
   'pin', 'count', 'pres', 'fill', 'resumen', 'ultimos', 'btn-simular-corte-red', 'cerrar-sesion-asistencia',
-  'tabs-modo', 'sec-qr', 'sec-pin', 'confirmar', 'simqr', 'sim-no-matriculado',
+  'tabs-modo', 'sec-qr', 'sec-pin', 'confirmar', 'simqr',
   'tabla', 'buscar', 'cnt', 'btn-cierre-manual-pantalla',
   'subjects', 'alerta', 'contenedor-historial', 'historial-resumen', 'historial-lista', 'sel-asignatura-historial', 'estado-general-pct',
   'contenedor-excusas', 'enviar-excusa', 'asig', 'fecha', 'desc', 'archivo',
@@ -121,7 +121,7 @@ const regManual = dbMod.actualizarRegistroManualOCorreccion({
   nuevoEstado: 'Presente',
   confirmado: true
 });
-check('CP-06 (M04): Registro manual marca a Manuela Quintero como Presente con medio Manual contingencia (M04)', regManual.ok && regManual.medio === 'Manual contingencia (M04)');
+check('CP-06 (M04): Registro manual marca a Manuela Quintero como Presente con medio Manual en aula', regManual.ok && regManual.medio === 'Manual en aula');
 
 const novOk = dbMod.registrarNovedadSesion({ nroLista: 21, tipo: 'Llegada tarde', minutos: 12, nota: 'Tráfico' });
 const nov500Min = dbMod.registrarNovedadSesion({ nroLista: 21, tipo: 'Salida anticipada', minutos: 500, nota: 'Exceso' });

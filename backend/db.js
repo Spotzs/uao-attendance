@@ -503,7 +503,7 @@ function marcarAsistenciaEstudiante({ sesionId = 'SES-ISW1-G01-ACTUAL', estudian
     return { ok: false, msg: 'No hay una sesión activa. Solicite al docente iniciar la asistencia.' };
   }
   if (!ses.sesionActiva) {
-    return { ok: false, msg: 'La sesión de asistencia ya fue cerrada por el docente (M04).' };
+    return { ok: false, msg: 'La sesión de asistencia ya fue cerrada por el docente.' };
   }
 
   const valMat = ext.validarMatriculaRegistroAcademico(db, {
@@ -534,14 +534,14 @@ function marcarAsistenciaEstudiante({ sesionId = 'SES-ISW1-G01-ACTUAL', estudian
   `).get(sesionId, estudianteCodigo);
 
   if (!reg) {
-    return { ok: false, msg: `Error RF-11: Estudiante (${estudianteCodigo}) no matriculado en este grupo académico.` };
+    return { ok: false, msg: `Estudiante (${estudianteCodigo}) no matriculado en este grupo académico.` };
   }
   if (reg.estado === 'Presente') {
     return { ok: false, msg: 'Ya registraste tu asistencia para esta sesión de clase.' };
   }
 
   const hora = new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  const medioLabel = modo === 'QR' ? 'Escaneo QR móvil (M03)' : 'PIN de aula (M03)';
+  const medioLabel = modo === 'QR' ? 'Escaneo QR móvil' : 'PIN de aula';
 
   db.prepare(`
     UPDATE registros_asistencia
@@ -553,7 +553,7 @@ function marcarAsistenciaEstudiante({ sesionId = 'SES-ISW1-G01-ACTUAL', estudian
 
   registrarAuditoria({
     autor: autor || `${reg.estudiante_nombre} (Estudiante)`,
-    accion: 'Marcado autónomo (M03)',
+    accion: 'Marcado autónomo',
     valorAnterior: reg.estado,
     valorNuevo: 'Presente',
     detalle: `${reg.estudiante_nombre} (${reg.estudiante_codigo}) marcó asistencia vía ${medioLabel}.`
@@ -581,20 +581,20 @@ function cerrarSesionAsistencia({ sesionId = 'SES-ISW1-G01-ACTUAL', autor = 'San
 
   const updateReg = db.prepare(`
     UPDATE registros_asistencia
-    SET estado = 'Ausente', hora_registro = ?, medio_registro = 'Cierre formal M04'
+    SET estado = 'Ausente', hora_registro = ?, medio_registro = 'Cierre de sesión'
     WHERE id = ?
   `);
 
   for (const row of sinReg) {
     updateReg.run(hora, row.id);
-    sincronizarSesionConHistorial(row.estudiante_codigo, ses.asignatura_id, 'Ausente', 'Cierre formal M04');
+    sincronizarSesionConHistorial(row.estudiante_codigo, ses.asignatura_id, 'Ausente', 'Cierre de sesión');
   }
 
   db.prepare(`UPDATE sesiones SET estado = 'CERRADA' WHERE id = ?`).run(sesionId);
 
   registrarAuditoria({
     autor,
-    accion: 'Cierre de sesión de asistencia (M04)',
+    accion: 'Cierre de sesión de asistencia',
     valorAnterior: 'ABIERTA',
     valorNuevo: 'CERRADA',
     detalle: `Sesión finalizada. ${sinReg.length} estudiantes fijados como Ausentes.`
@@ -619,7 +619,7 @@ function actualizarRegistroManualOCorreccion({
   if (periodoCerrado) {
     return {
       ok: false,
-      msg: 'Error RF-09/RF-13: La sesión pertenece a un periodo cerrado por Registro Académico. Solicite trámite administrativo.'
+      msg: 'La sesión pertenece a un periodo cerrado por Registro Académico. Solicite trámite administrativo.'
     };
   }
 
@@ -647,12 +647,12 @@ function actualizarRegistroManualOCorreccion({
       codigo: reg.estudiante_codigo,
       valorAnterior: anterior,
       valorNuevo: nuevoEstado,
-      msg: `Confirmación requerida (M08): ¿Cambiar a ${reg.estudiante_nombre} de [${anterior}] a [${nuevoEstado}] en sesión cerrada?`
+      msg: `Confirmación requerida: ¿Cambiar a ${reg.estudiante_nombre} de [${anterior}] a [${nuevoEstado}] en sesión cerrada?`
     };
   }
 
   const hora = new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  const medio = sesionCerrada ? 'Corrección posterior (M08)' : 'Manual contingencia (M04)';
+  const medio = sesionCerrada ? 'Corrección posterior' : 'Manual en aula';
 
   db.prepare(`
     UPDATE registros_asistencia
@@ -665,7 +665,7 @@ function actualizarRegistroManualOCorreccion({
   if (sesionCerrada) {
     registrarAuditoria({
       autor,
-      accion: 'Corrección de registro (M08)',
+      accion: 'Corrección de registro',
       valorAnterior: anterior,
       valorNuevo: nuevoEstado,
       detalle: `Estudiante ${reg.estudiante_nombre} (${reg.estudiante_codigo}): valor anterior [${anterior}] -> nuevo valor [${nuevoEstado}]. Recálculo de historial ejecutado.`
@@ -673,10 +673,10 @@ function actualizarRegistroManualOCorreccion({
   } else {
     registrarAuditoria({
       autor,
-      accion: 'Registro manual (M04)',
+      accion: 'Registro manual',
       valorAnterior: anterior,
       valorNuevo: nuevoEstado,
-      detalle: `Estudiante ${reg.estudiante_nombre} (${reg.estudiante_codigo}) marcado ${nuevoEstado} con medio Manual contingencia (M04).`
+      detalle: `Estudiante ${reg.estudiante_nombre} (${reg.estudiante_codigo}) marcado ${nuevoEstado} vía registro manual.`
     });
   }
 
@@ -704,7 +704,7 @@ function registrarNovedadSesion({
   if (!Number.isInteger(m) || m < 1 || m > 180) {
     return {
       ok: false,
-      msg: 'Rechazado (RF-10): Los minutos deben ser un número entero entre 1 y 180 minutos.'
+      msg: 'Los minutos deben ser un número entero entre 1 y 180 minutos.'
     };
   }
 
@@ -719,7 +719,7 @@ function registrarNovedadSesion({
   if (reg.estado !== 'Presente') {
     return {
       ok: false,
-      msg: `Rechazado (RF-10): No se puede registrar «${tipo}» a ${reg.estudiante_nombre} porque su estado es «${reg.estado}». La novedad aplica únicamente a estudiantes con estado «Presente».`
+      msg: `No se puede registrar «${tipo}» a ${reg.estudiante_nombre} porque su estado es «${reg.estado}». La novedad aplica únicamente a estudiantes con estado «Presente».`
     };
   }
 
@@ -738,7 +738,7 @@ function registrarNovedadSesion({
 
   registrarAuditoria({
     autor,
-    accion: 'Registro de novedad (M07)',
+    accion: 'Registro de novedad',
     valorAnterior: reg.novedad_tipo ? `${reg.novedad_tipo} (${reg.novedad_minutos}m)` : 'Sin novedad',
     valorNuevo: `${tipo} (${m}m)`,
     detalle: `${tipo} para ${reg.estudiante_nombre} (${reg.estudiante_codigo}): ${m} min. Estado Presente conservado.`
@@ -746,7 +746,7 @@ function registrarNovedadSesion({
 
   return {
     ok: true,
-    msg: `Novedad «${tipo} (${m}m)» guardada exitosamente (M07). El estado «Presente» se conserva.`
+    msg: `Novedad «${tipo} (${m}m)» guardada exitosamente. El estado «Presente» se conserva.`
   };
 }
 
@@ -923,16 +923,16 @@ function radicarExcusa({
 
   registrarAuditoria({
     autor: `${estudianteNombre} (Estudiante)`,
-    accion: 'Radicación de excusa (M06)',
+    accion: 'Radicación de excusa',
     valorAnterior: 'Sin excusa',
     valorNuevo: 'Pendiente',
-    detalle: `Excusa para ${resolvedAsigNombre} (${fecha}) radicada con soporte ${saved.originalName} en GCS (${saved.bucket}).`
+    detalle: `Excusa para ${resolvedAsigNombre} (${fecha}) radicada con soporte ${saved.originalName}.`
   });
 
   return {
     ok: true,
     id: info.lastInsertRowid,
-    msg: 'Excusa radicada exitosamente con estado PENDIENTE (M06).'
+    msg: 'Excusa radicada exitosamente con estado PENDIENTE.'
   };
 }
 
@@ -950,7 +950,7 @@ function evaluarExcusa({ id, nuevoEstado, autor = 'Sandra Lucía Guañarita (Doc
   `).run(nuevoEstado, autor, exc.id);
 
   const nuevoEstadoSesion = nuevoEstado === 'Aceptada' ? 'Ausencia Justificada' : 'Ausente';
-  const nuevoMedio = nuevoEstado === 'Aceptada' ? 'Excusa aprobada M06' : 'Cierre formal M04';
+  const nuevoMedio = nuevoEstado === 'Aceptada' ? 'Excusa aprobada' : 'Cierre de sesión';
 
   const updated = db.prepare(`
     UPDATE historial_estudiante
@@ -966,7 +966,7 @@ function evaluarExcusa({ id, nuevoEstado, autor = 'Sandra Lucía Guañarita (Doc
         ORDER BY sesion_numero DESC LIMIT 1
       `).get(exc.estudiante_codigo, exc.asignatura_id);
       if (targetRow) {
-        db.prepare(`UPDATE historial_estudiante SET estado = 'Ausencia Justificada', medio = 'Excusa aprobada M06' WHERE id = ?`).run(targetRow.id);
+        db.prepare(`UPDATE historial_estudiante SET estado = 'Ausencia Justificada', medio = 'Excusa aprobada' WHERE id = ?`).run(targetRow.id);
       }
     } else if (estadoAnterior === 'Aceptada' && nuevoEstado !== 'Aceptada') {
       const targetRow = db.prepare(`
@@ -975,14 +975,14 @@ function evaluarExcusa({ id, nuevoEstado, autor = 'Sandra Lucía Guañarita (Doc
         ORDER BY sesion_numero DESC LIMIT 1
       `).get(exc.estudiante_codigo, exc.asignatura_id);
       if (targetRow) {
-        db.prepare(`UPDATE historial_estudiante SET estado = 'Ausente', medio = 'Cierre formal M04' WHERE id = ?`).run(targetRow.id);
+        db.prepare(`UPDATE historial_estudiante SET estado = 'Ausente', medio = 'Cierre de sesión' WHERE id = ?`).run(targetRow.id);
       }
     }
   }
 
   registrarAuditoria({
     autor,
-    accion: 'Evaluación de excusa (M06)',
+    accion: 'Evaluación de excusa',
     valorAnterior: estadoAnterior,
     valorNuevo: nuevoEstado,
     detalle: `Excusa #${exc.id} de ${exc.estudiante_nombre} (${exc.estudiante_codigo}) en ${exc.asignatura_nombre} (${exc.fecha_falta}) dictaminada como [${nuevoEstado}]. Historial individual recalculado.`
