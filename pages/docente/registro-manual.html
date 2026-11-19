@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Registro Manual de Asistencia · M04/M08 · UAO Attendance</title>
+<link rel="stylesheet" href="../../css/styles.css">
+</head>
+<body>
+<div class="app">
+  <nav class="side">
+    <div>
+      <div class="brand-top side-brand" style="padding:4px 6px 12px">
+        <div class="uao-logo-box"><div class="uao-logo-circle">uao</div></div>
+        <div class="brand-text">
+          <b>UAO Attendance</b>
+          <small>Universidad Autónoma de Occidente</small>
+        </div>
+      </div>
+
+      <div class="side-section-label">MENÚ PRINCIPAL</div>
+      <div class="side-nav">
+        <a href="inicio.html"><span class="nav-left">⊞ Inicio</span></a>
+        <a href="registro-manual.html" class="on"><span class="nav-left">📷 Lista manual</span></a>
+        <a href="bitacora.html"><span class="nav-left">🕒 Historial / Bitácora</span></a>
+        <a href="excusas.html"><span class="nav-left">📄 Excusas</span><span class="nav-count" id="nav-exc-count">3</span></a>
+      </div>
+    </div>
+
+    <div class="side-bottom">
+      <div class="period-box">
+        <span>📅</span>
+        <div>
+          <small>Periodo actual</small>
+          <b>2026-1</b>
+        </div>
+      </div>
+      <a class="out" href="../../index.html"><span class="nav-left">↪ Cerrar sesión</span></a>
+    </div>
+  </nav>
+
+  <div class="main-col">
+    <header class="topbar">
+      <div class="vista-switch">
+        <span>Vista</span>
+        <select id="switch-vista" aria-label="Cambiar vista de rol">
+          <option value="docente" selected>Docente</option>
+          <option value="estudiante">Estudiante</option>
+          <option value="director">Director</option>
+        </select>
+      </div>
+      <button class="bell-btn" type="button" title="Notificaciones" onclick="location.href='excusas.html'">🔔</button>
+      <div class="user-pill">
+        <span class="avatar">SG</span>
+        <div class="user-pill-info">
+          <b>Sandra Guañarita</b>
+          <small>Docente</small>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-head">
+        <div>
+          <span class="date-eyebrow">MARTES, 12 DE MAYO</span>
+          <h1>Buenos días, Sandra</h1>
+          <p class="sub">Tu clase está lista. Inicia el registro cuando tus estudiantes estén en el aula.</p>
+        </div>
+        <div class="active-subject-picker">
+          <label for="sel-asignatura-manual">ASIGNATURA ACTIVA</label>
+          <select id="sel-asignatura-manual">
+            <option value="isw1" selected>Ingeniería de Software I · G01</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="session-bar">
+        <div class="session-bar-left">
+          <div class="session-icon-box">🖥️</div>
+          <div>
+            <small style="font-size:10px;color:#94A3B8;text-transform:uppercase;letter-spacing:0.06em;font-weight:700">SESIÓN ACTUAL</small>
+            <div class="session-bar-title">
+              <b>Ingeniería de Software I</b>
+              <span class="live-pill" id="badge-estado-sesion">● EN VIVO</span>
+            </div>
+            <small style="color:#94A3B8;font-size:12px">Salón Y3-04 · 8:00–10:00 a. m.</small>
+          </div>
+        </div>
+
+        <div class="session-tabs">
+          <a href="inicio.html">Registro rápido</a>
+          <a href="registro-manual.html" class="on">Lista manual</a>
+          <a href="excusas.html">Excusas <span class="badge-red" id="tab-exc-count">3</span></a>
+        </div>
+      </div>
+
+      <div class="banner ok" id="banner-estado-m04">Sesión activa para registro manual de contingencia (RF-05).</div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap">
+          <div>
+            <span class="date-eyebrow">CONTINGENCIA · M04 &amp; M08</span>
+            <b style="font-size:18px;display:block">Registro manual de asistencia</b>
+            <small class="muted">Actualiza el estado de un estudiante cuando no pueda usar QR o PIN.</small>
+          </div>
+
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;flex:1;justify-content:flex-end">
+            <input class="input" id="buscar" placeholder="🔍 Buscar estudiante o código..." style="max-width:280px;margin:0">
+            <button class="btn danger sm" id="btn-cierre-manual-pantalla" type="button" style="width:auto">Finalizar y cerrar sesión (M04)</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+          <span class="muted" id="cnt" style="font-weight:600;font-size:12px"></span>
+          <a href="bitacora.html" style="color:var(--red);font-size:12px;font-weight:700">Ver bitácora inmutable (M08) ›</a>
+        </div>
+
+        <div class="scroll">
+          <table id="tabla"></table>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<script src="../../js/main.js"></script>
+</body>
+</html>

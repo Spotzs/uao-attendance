@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Presentar una Excusa · M06 · UAO Attendance</title>
+<link rel="stylesheet" href="../../css/styles.css">
+</head>
+<body>
+<div class="app">
+  <nav class="side">
+    <div>
+      <div class="brand-top side-brand" style="padding:4px 6px 12px">
+        <div class="uao-logo-box"><div class="uao-logo-circle">uao</div></div>
+        <div class="brand-text">
+          <b>UAO Attendance</b>
+          <small>Universidad Autónoma de Occidente</small>
+        </div>
+      </div>
+
+      <div class="side-section-label">MENÚ PRINCIPAL</div>
+      <div class="side-nav">
+        <a href="inicio.html"><span class="nav-left">⊞ Inicio</span></a>
+        <a href="historial.html"><span class="nav-left">🕒 Historial</span></a>
+        <a href="nueva-excusa.html" class="on"><span class="nav-left">📄 Excusas</span></a>
+      </div>
+    </div>
+
+    <div class="side-bottom">
+      <div class="period-box">
+        <span>📅</span>
+        <div>
+          <small>Periodo actual</small>
+          <b>2026-1</b>
+        </div>
+      </div>
+      <a class="out" href="../../index.html"><span class="nav-left">↪ Cerrar sesión</span></a>
+    </div>
+  </nav>
+
+  <div class="main-col">
+    <header class="topbar">
+      <div class="vista-switch">
+        <span>Estudiante activo</span>
+        <select id="switch-estudiante-activo" aria-label="Seleccionar estudiante">
+          <option value="2248332">Juan Sebastián Marín (2248332)</option>
+          <option value="2245006">Andrés Felipe Morales (2245006)</option>
+          <option value="2248910">Mariana López (2248910)</option>
+          <option value="2245009">Sara Sofía Castillo (2245009)</option>
+        </select>
+      </div>
+      <div class="vista-switch">
+        <span>Vista</span>
+        <select id="switch-vista" aria-label="Cambiar vista de rol">
+          <option value="docente">Docente</option>
+          <option value="estudiante" selected>Estudiante</option>
+          <option value="director">Director</option>
+        </select>
+      </div>
+      <button class="bell-btn" type="button" title="Alertas">🔔</button>
+      <div class="user-pill">
+        <span class="avatar" id="est-avatar-top">JM</span>
+        <div class="user-pill-info">
+          <b id="est-nombre-top">Juan Sebastián Marín</b>
+          <small id="est-cod-top">Estudiante · 2248332</small>
+        </div>
+      </div>
+    </header>
+
+    <main class="content" style="padding-bottom:100px">
+      <div class="hero">
+        <div>
+          <span class="date-eyebrow" style="color:#F87171">MARTES, 12 DE MAYO</span>
+          <h1 id="saludo-estudiante">Hola, Juan Sebastián</h1>
+          <p style="margin:0;font-size:14px;color:#CBD5E1">
+            Sigue así. Tu asistencia general este semestre es del <b id="estado-general-texto">89.3%</b>.
+          </p>
+        </div>
+        <div class="gauge-circle">
+          <b id="estado-general-pct">89.3%</b>
+          <small>Global</small>
+        </div>
+      </div>
+
+      <div class="subnav-pills">
+        <a href="inicio.html">⊞ Inicio</a>
+        <a href="historial.html">🕒 Historial</a>
+        <a href="nueva-excusa.html" class="on">📄 Nueva excusa</a>
+      </div>
+
+      <div class="card" style="max-width:640px">
+        <span class="date-eyebrow">SOLICITUD DIGITAL · M06 (RF-07 / DEF-06)</span>
+        <h1 style="font-size:22px;margin:2px 0 4px">Presentar una excusa</h1>
+        <p class="sub" style="margin-bottom:16px">Completa la información y adjunta un soporte legible (PDF, JPG o PNG máx. 10 MB).</p>
+
+        <div class="field">
+          <label for="asig">Asignatura</label>
+          <select class="input" id="asig">
+            <option value="">Seleccione una materia...</option>
+            <option value="Ingeniería de Software I" selected>Ingeniería de Software I</option>
+            <option value="Bases de Datos II">Bases de Datos II</option>
+            <option value="Matemáticas Discretas">Matemáticas Discretas</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="fecha">Fecha de la ausencia (debe corresponder a una falla registrada)</label>
+          <input class="input" id="fecha" type="date" value="2026-10-25" max="2026-11-18" style="margin-bottom:4px">
+          <small class="muted" id="fechas-fallas-hint" style="font-size:11px;display:block">
+            Fechas con inasistencia registrada en esta asignatura: <code id="lista-fechas-validas">2026-10-25</code>
+          </small>
+        </div>
+
+        <div class="field">
+          <label for="desc">Descripción breve</label>
+          <textarea class="input" id="desc" rows="3" placeholder="Cuéntanos el motivo de tu ausencia..."></textarea>
+        </div>
+
+        <div class="field">
+          <label for="archivo">Soporte digital (Google Cloud Storage · PDF, JPG o PNG ≤ 10 MB)</label>
+          <input class="input" id="archivo" type="file" accept=".pdf,.jpg,.jpeg,.png" style="margin-bottom:4px">
+          <small class="muted" style="font-size:11px">El archivo se almacena en el contenedor Google Cloud Storage vinculado a tu registro.</small>
+        </div>
+
+        <div class="banner bad" id="msg" role="alert" hidden></div>
+
+        <div class="actions" style="margin-top:16px">
+          <a class="btn sec link" href="historial.html">Cancelar</a>
+          <button class="btn" id="enviar-excusa" type="button">Enviar excusa para evaluación</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<a class="fab fx" href="marcar-asistencia.html">📷 Marcar asistencia</a>
+
+<nav class="bottom">
+  <div>
+    <a href="inicio.html">🏠<span>Inicio</span></a>
+    <a href="marcar-asistencia.html">📷<span>Marcar</span></a>
+    <a href="historial.html">🕒<span>Historial</span></a>
+    <a href="nueva-excusa.html" class="on">📄<span>Excusas</span></a>
+    <a href="../../index.html">↪<span>Salir</span></a>
+  </div>
+</nav>
+
+<script src="../../js/main.js"></script>
+</body>
+</html>

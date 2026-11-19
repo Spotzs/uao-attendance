@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Registrar Novedad · M07 · Portal Docente · UAO Attendance</title>
+<link rel="stylesheet" href="../../css/styles.css">
+</head>
+<body>
+<div class="app">
+  <nav class="side">
+    <div>
+      <div class="brand-top side-brand" style="padding:4px 6px 12px">
+        <div class="uao-logo-box"><div class="uao-logo-circle">uao</div></div>
+        <div class="brand-text">
+          <b>UAO Attendance</b>
+          <small>Universidad Autónoma de Occidente</small>
+        </div>
+      </div>
+
+      <div class="side-section-label">MENÚ PRINCIPAL</div>
+      <div class="side-nav">
+        <a href="inicio.html" class="on"><span class="nav-left">⊞ Inicio</span></a>
+        <a href="registro-manual.html"><span class="nav-left">📷 Lista manual</span></a>
+        <a href="bitacora.html"><span class="nav-left">🕒 Historial / Bitácora</span></a>
+        <a href="excusas.html"><span class="nav-left">📄 Excusas</span><span class="nav-count" id="nav-exc-count">3</span></a>
+      </div>
+    </div>
+
+    <div class="side-bottom">
+      <div class="period-box">
+        <span>📅</span>
+        <div>
+          <small>Periodo actual</small>
+          <b>2026-1</b>
+        </div>
+      </div>
+      <a class="out" href="../../index.html"><span class="nav-left">↪ Cerrar sesión</span></a>
+    </div>
+  </nav>
+
+  <div class="main-col">
+    <header class="topbar">
+      <div class="vista-switch">
+        <span>Vista</span>
+        <select id="switch-vista" aria-label="Cambiar vista de rol">
+          <option value="docente" selected>Docente</option>
+          <option value="estudiante">Estudiante</option>
+          <option value="director">Director</option>
+        </select>
+      </div>
+      <button class="bell-btn" type="button" title="Notificaciones" onclick="location.href='excusas.html'">🔔</button>
+      <div class="user-pill">
+        <span class="avatar">SG</span>
+        <div class="user-pill-info">
+          <b>Sandra Guañarita</b>
+          <small>Docente</small>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="card" style="max-width:560px;margin:12px auto">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <span class="stat-icon" style="background:var(--red-soft);color:var(--red);border-radius:50%">🕒</span>
+            <div>
+              <span class="date-eyebrow" style="margin-bottom:2px">SESIÓN ACTUAL · M07 (RF-10)</span>
+              <h1 style="font-size:20px;margin:0">Registrar novedad</h1>
+            </div>
+          </div>
+          <a href="inicio.html" class="btn neutral sm" style="width:auto;padding:0 12px" aria-label="Cerrar">✕</a>
+        </div>
+
+        <div class="field">
+          <label for="sel-estudiante">Estudiante</label>
+          <select class="input" id="sel-estudiante" style="margin-bottom:4px"></select>
+          <small class="muted" style="font-size:11px">Solo se admiten novedades sobre estudiantes con estado «Presente» (DEF-10).</small>
+        </div>
+
+        <div class="field">
+          <label>Tipo de novedad</label>
+          <div class="tabs" id="tipo-novedad-tabs">
+            <span class="on">Llegada tarde</span>
+            <span>Salida anticipada</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="min" id="lbl-minutos-novedad">Minutos de retraso (1 a 180 min)</label>
+          <input class="input" id="min" type="number" min="1" max="180" step="1" value="12">
+        </div>
+
+        <div class="field">
+          <label for="nota">Nota opcional</label>
+          <textarea class="input" id="nota" rows="3" placeholder="Agrega un contexto breve para el historial..."></textarea>
+        </div>
+
+        <div class="banner" id="msg" role="alert" hidden></div>
+
+        <div class="actions" style="margin-top:16px">
+          <a class="btn sec link" href="inicio.html">Cancelar</a>
+          <button class="btn" id="guardar-novedad" type="button">Guardar novedad</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<script src="../../js/main.js"></script>
+</body>
+</html>

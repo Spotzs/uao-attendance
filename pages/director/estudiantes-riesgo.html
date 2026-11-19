@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Estudiantes en Riesgo · M05/M09 · Dirección · UAO Attendance</title>
+<link rel="stylesheet" href="../../css/styles.css">
+</head>
+<body>
+<div class="app">
+  <nav class="side">
+    <div>
+      <div class="brand-top side-brand" style="padding:4px 6px 12px">
+        <div class="uao-logo-box"><div class="uao-logo-circle">uao</div></div>
+        <div class="brand-text">
+          <b>UAO Attendance</b>
+          <small>Universidad Autónoma de Occidente</small>
+        </div>
+      </div>
+
+      <div class="side-section-label">MENÚ PRINCIPAL</div>
+      <div class="side-nav">
+        <a href="resumen.html"><span class="nav-left">⊞ Resumen</span></a>
+        <a href="resumen.html"><span class="nav-left">📈 Analítica</span></a>
+        <a href="estudiantes-riesgo.html" class="on"><span class="nav-left">👥 Estudiantes</span></a>
+        <a href="resumen.html"><span class="nav-left">📄 Reportes</span></a>
+      </div>
+    </div>
+
+    <div class="side-bottom">
+      <div class="period-box">
+        <span>📅</span>
+        <div>
+          <small>Periodo actual</small>
+          <b>2026-1</b>
+        </div>
+      </div>
+      <a class="out" href="../../index.html"><span class="nav-left">↪ Cerrar sesión</span></a>
+    </div>
+  </nav>
+
+  <div class="main-col">
+    <header class="topbar">
+      <div class="vista-switch">
+        <span>Vista</span>
+        <select id="switch-vista" aria-label="Cambiar vista de rol">
+          <option value="docente">Docente</option>
+          <option value="estudiante">Estudiante</option>
+          <option value="director" selected>Director</option>
+        </select>
+      </div>
+      <button class="bell-btn" type="button" title="Notificaciones">🔔</button>
+      <div class="user-pill">
+        <span class="avatar">CR</span>
+        <div class="user-pill-info">
+          <b>Carlos Ramírez</b>
+          <small>Director de programa</small>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-head">
+        <div>
+          <span class="date-eyebrow">ATENCIÓN PRIORITARIA · M05 &amp; M09 (RF-09 / RF-15)</span>
+          <h1>Estudiantes en riesgo</h1>
+          <p class="sub">Con 15% o más de inasistencias acumuladas en el periodo académico.</p>
+        </div>
+        <div class="actions">
+          <a class="btn sec sm link" href="resumen.html">← Volver al resumen</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="scroll">
+          <table id="tabla-riesgo"></table>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<script src="../../js/main.js"></script>
+</body>
+</html>

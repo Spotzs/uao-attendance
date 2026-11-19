@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Historial de Asistencia por Asignatura · M05 · UAO Attendance</title>
+<link rel="stylesheet" href="../../css/styles.css">
+</head>
+<body>
+<div class="app">
+  <nav class="side">
+    <div>
+      <div class="brand-top side-brand" style="padding:4px 6px 12px">
+        <div class="uao-logo-box"><div class="uao-logo-circle">uao</div></div>
+        <div class="brand-text">
+          <b>UAO Attendance</b>
+          <small>Universidad Autónoma de Occidente</small>
+        </div>
+      </div>
+
+      <div class="side-section-label">MENÚ PRINCIPAL</div>
+      <div class="side-nav">
+        <a href="inicio.html"><span class="nav-left">⊞ Inicio</span></a>
+        <a href="historial.html" class="on"><span class="nav-left">🕒 Historial</span></a>
+        <a href="nueva-excusa.html"><span class="nav-left">📄 Excusas</span></a>
+      </div>
+    </div>
+
+    <div class="side-bottom">
+      <div class="period-box">
+        <span>📅</span>
+        <div>
+          <small>Periodo actual</small>
+          <b>2026-1</b>
+        </div>
+      </div>
+      <a class="out" href="../../index.html"><span class="nav-left">↪ Cerrar sesión</span></a>
+    </div>
+  </nav>
+
+  <div class="main-col">
+    <header class="topbar">
+      <div class="vista-switch">
+        <span>Estudiante activo</span>
+        <select id="switch-estudiante-activo" aria-label="Seleccionar estudiante">
+          <option value="2248332">Juan Sebastián Marín (2248332)</option>
+          <option value="2245006">Andrés Felipe Morales (2245006)</option>
+          <option value="2248910">Mariana López (2248910)</option>
+          <option value="2245009">Sara Sofía Castillo (2245009)</option>
+        </select>
+      </div>
+      <div class="vista-switch">
+        <span>Vista</span>
+        <select id="switch-vista" aria-label="Cambiar vista de rol">
+          <option value="docente">Docente</option>
+          <option value="estudiante" selected>Estudiante</option>
+          <option value="director">Director</option>
+        </select>
+      </div>
+      <button class="bell-btn" type="button" title="Alertas">🔔</button>
+      <div class="user-pill">
+        <span class="avatar" id="est-avatar-top">JM</span>
+        <div class="user-pill-info">
+          <b id="est-nombre-top">Juan Sebastián Marín</b>
+          <small id="est-cod-top">Estudiante · 2248332</small>
+        </div>
+      </div>
+    </header>
+
+    <main class="content" style="padding-bottom:100px">
+      <div class="hero">
+        <div>
+          <span class="date-eyebrow" style="color:#F87171">MARTES, 12 DE MAYO</span>
+          <h1 id="saludo-estudiante">Hola, Juan Sebastián</h1>
+          <p style="margin:0;font-size:14px;color:#CBD5E1">
+            Sigue así. Tu asistencia general este semestre es del <b id="estado-general-texto">89.3%</b>.
+          </p>
+        </div>
+        <div class="gauge-circle">
+          <b id="estado-general-pct">89.3%</b>
+          <small>Global</small>
+        </div>
+      </div>
+
+      <div class="subnav-pills">
+        <a href="inicio.html">⊞ Inicio</a>
+        <a href="historial.html" class="on">🕒 Historial</a>
+        <a href="nueva-excusa.html">📄 Nueva excusa</a>
+      </div>
+
+      <div class="card" style="margin-bottom:14px;padding:14px 18px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <div>
+            <span class="date-eyebrow" style="margin-bottom:2px">CONSULTA POR ASIGNATURA (RF-06 / DEF-03)</span>
+            <b style="font-size:15px">Selecciona la asignatura matriculada</b>
+          </div>
+          <select class="input" id="sel-asignatura-historial" style="max-width:320px;margin:0">
+            <option value="isw1">Ingeniería de Software I (G01)</option>
+            <option value="bd2">Bases de Datos II (G01)</option>
+            <option value="md">Matemáticas Discretas (G01)</option>
+          </select>
+        </div>
+        <div class="tabs" id="tabs-asignatura-historial" style="margin-bottom:0;margin-top:10px">
+          <span class="on" data-asig="isw1">Ingeniería de Software I</span>
+          <span data-asig="bd2">Bases de Datos II</span>
+          <span data-asig="md">Matemáticas Discretas</span>
+        </div>
+      </div>
+
+      <div class="card" id="contenedor-historial">
+        <div id="historial-resumen"></div>
+        <div id="historial-lista" style="margin-top:14px"></div>
+        <div class="actions" style="margin-top:16px">
+          <a class="btn sec link" href="nueva-excusa.html">+ Radicar excusa digital sobre una inasistencia</a>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<a class="fab fx" href="marcar-asistencia.html">📷 Marcar asistencia</a>
+
+<nav class="bottom">
+  <div>
+    <a href="inicio.html">🏠<span>Inicio</span></a>
+    <a href="marcar-asistencia.html">📷<span>Marcar</span></a>
+    <a href="historial.html" class="on">🕒<span>Historial</span></a>
+    <a href="nueva-excusa.html">📄<span>Excusas</span></a>
+    <a href="../../index.html">↪<span>Salir</span></a>
+  </div>
+</nav>
+
+<script src="../../js/main.js"></script>
+</body>
+</html>
