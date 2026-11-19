@@ -146,7 +146,7 @@
       {
         fecha: '2026-11-02 08:00:15',
         autor: 'Sandra Lucía Guañarita (Docente)',
-        accion: 'Apertura de sesión (M02)',
+        accion: 'Apertura de sesión',
         valorAnterior: 'INACTIVA',
         valorNuevo: 'ABIERTA',
         detalle: 'Sesión iniciada para ISW1-G01 (Salón Y3-04). PIN y QR de 60 s generados.'
@@ -154,7 +154,7 @@
       {
         fecha: '2026-11-02 08:05:42',
         autor: 'Sandra Lucía Guañarita (Docente)',
-        accion: 'Registro de contingencia (M04)',
+        accion: 'Registro manual',
         valorAnterior: 'Sin registro',
         valorNuevo: 'Presente',
         detalle: 'Estudiante Daniel Alejandro Cruz (2245010) marcado Presente vía manual.'
@@ -211,7 +211,7 @@
     }
     const sesionActiva = store.get('sesion_activa', true);
     if (!sesionActiva) {
-      return { ok: false, msg: 'La sesión de asistencia ya fue cerrada por el docente (M04).' };
+      return { ok: false, msg: 'La sesión de asistencia ya fue cerrada por el docente.' };
     }
     const p = store.get('pin', null);
     if (!p) {
@@ -468,7 +468,7 @@
     const r = getRoster();
     const est = r.find(x => x.codigo === String(codigoEst)) || r[22];
     if (!est) {
-      return { ok: false, msg: 'Error RF-11: Estudiante no matriculado en este grupo académico.' };
+      return { ok: false, msg: 'Error: Estudiante no matriculado en este grupo académico.' };
     }
     if (est.estado === 'Presente') {
       return { ok: false, msg: 'Ya registraste tu asistencia para esta sesión de clase.' };
@@ -486,7 +486,7 @@
       setMateriasEstudiante(est.codigo, mats);
     }
 
-    registrarAuditoria('Marcado autónomo (M03)', `${est.nombre} (${est.codigo}) marcó asistencia vía ${metodo}`, estadoPrevio, 'Presente');
+    registrarAuditoria('Marcado autónomo', `${est.nombre} (${est.codigo}) marcó asistencia vía ${metodo}`, estadoPrevio, 'Presente');
     return { ok: true, msg: `¡Asistencia confirmada! · ${horaActual()} · ${MATERIA_ACTIVA} · Presente` };
   }
 
@@ -586,7 +586,7 @@
     }
 
     registrarAuditoria(
-      'Evaluación de excusa (M06)',
+      'Evaluación de excusa',
       `Excusa #${exc.id} de ${exc.estudiante} (${exc.codigo}) dictaminada como [${nuevoEstado}]. Historial de ${exc.codigo} recalculado.`,
       estadoAnterior,
       nuevoEstado
@@ -639,9 +639,9 @@
       director: 'pages/director/resumen.html'
     };
     const defaultUsers = {
-      docente: 'sandra.guanarita',
-      estudiante: 'juan_se.marin',
-      director: 'carlos.ramirez'
+      docente: 'sandra.guanarita@uao.edu.co',
+      estudiante: 'juan_se.marin@uao.edu.co',
+      director: 'carlos.ramirez@uao.edu.co'
     };
 
     $$('#roles span').forEach((s, i) => {
@@ -649,8 +649,7 @@
         rol = ['docente', 'estudiante', 'director'][i];
         $$('#roles span').forEach(x => x.classList.remove('on'));
         s.classList.add('on');
-        $('#user').value = defaultUsers[rol];
-        $('#pass').value = 'Uao2026*';
+        if ($('#user')) $('#user').placeholder = defaultUsers[rol];
         if ($('#lmsg')) $('#lmsg').hidden = true;
       });
     });
@@ -700,7 +699,7 @@
     if ($('#sim-sso-down')) {
       $('#sim-sso-down').addEventListener('click', async () => {
         await apiRequest('/api/auth/sso-status', 'POST', { available: false });
-        msg($('#lmsg'), false, 'HTTP 503: Servicio de Autenticación Institucional UAO fuera de línea. Use el método alterno de contingencia en aula (RF-01).');
+        msg($('#lmsg'), false, 'Servicio de Autenticación Institucional UAO temporalmente fuera de servicio. Use el método alterno de registro en aula.');
         setTimeout(() => apiRequest('/api/auth/sso-status', 'POST', { available: true }), 4000);
       });
     }
@@ -716,20 +715,25 @@
         const nombre = ($('#reg-nombre').value || '').trim();
         const codigo = ($('#reg-codigo').value || '').trim();
         const username = ($('#reg-user').value || '').trim();
+        const password = $('#reg-pass') ? $('#reg-pass').value : '';
         const regRol = $('#reg-rol').value;
 
+        if (!password) {
+          return msg($('#reg-msg'), false, 'Ingrese una contraseña para la nueva cuenta.');
+        }
+
         const res = await apiRequest('/api/usuarios', 'POST', {
-          nombre, codigo, username, rol: regRol, password: 'Uao2026*'
+          nombre, codigo, username, rol: regRol, password
         });
         if (!res) {
-          return msg($('#reg-msg'), false, 'Inicie el servidor (`npm start`) para registrar usuarios nuevos en SQLite.');
+          return msg($('#reg-msg'), false, 'No se pudo conectar con el servidor.');
         }
         if (!res.ok) {
           return msg($('#reg-msg'), false, res.msg);
         }
-        msg($('#reg-msg'), true, `Usuario ${res.user.correo} (${res.user.codigo}) guardado en SQLite y matriculado. Ya puedes iniciar sesión con él.`);
+        msg($('#reg-msg'), true, `Usuario ${res.user.correo} (${res.user.codigo}) creado y matriculado. Ya puedes iniciar sesión.`);
         $('#user').value = res.user.username;
-        $('#pass').value = 'Uao2026*';
+        $('#pass').value = '';
       });
     }
 
@@ -766,15 +770,15 @@
       if (!sesionActiva) {
         $('#pin').textContent = '----';
         $('#count').textContent = '0';
-        if ($('#token-status-title')) $('#token-status-title').textContent = 'Sesión cerrada (M04)';
+        if ($('#token-status-title')) $('#token-status-title').textContent = 'Sesión cerrada';
         if ($('#token-status-sub')) $('#token-status-sub').textContent = 'El marcado por QR y PIN ha finalizado';
         if ($('#sub-estado-pin')) $('#sub-estado-pin').textContent = 'Registro autónomo cerrado';
       } else if (redDocenteCaida) {
         $('#pin').textContent = p.code;
         $('#count').textContent = '60';
-        if ($('#token-status-title')) $('#token-status-title').textContent = 'PIN retenido (Contingencia)';
+        if ($('#token-status-title')) $('#token-status-title').textContent = 'PIN retenido (Sin conexión)';
         if ($('#token-status-sub')) $('#token-status-sub').textContent = 'Vigencia extendida mientras dura la falla de red';
-        if ($('#sub-estado-pin')) $('#sub-estado-pin').textContent = 'Retenido por corte de red (DEF-02)';
+        if ($('#sub-estado-pin')) $('#sub-estado-pin').textContent = 'Modo sin conexión activo';
       } else {
         $('#pin').textContent = p.code;
         const segRestantes = Math.max(1, Math.ceil((p.exp - Date.now()) / 1000));
@@ -861,12 +865,12 @@
         if (caida) {
           if (alerta) {
             alerta.hidden = false;
-            alerta.textContent = '⚠ Falla de conexión detectada en el aula: el último PIN dinámico queda retenido con vigencia extendida para permitir el marcado de los estudiantes, o utilice la Lista Manual de contingencia (RF-02 / M04 / DEF-02).';
+            alerta.textContent = '⚠ Falla de conexión detectada en el aula: el último PIN dinámico queda retenido con vigencia extendida para permitir el marcado de los estudiantes, o utilice la Lista manual.';
           }
           $('#btn-simular-corte-red').textContent = 'Restablecer conexión de red';
         } else {
           if (alerta) alerta.hidden = true;
-          $('#btn-simular-corte-red').textContent = 'Simular corte de conexión de red local';
+          $('#btn-simular-corte-red').textContent = 'Modo sin conexión';
         }
       };
       actualizarUiRed();
@@ -917,13 +921,13 @@
       if (est.estado === 'Sin registro') {
         est.estado = 'Ausente';
         est.hora = horaActual();
-        est.medio = 'Cierre formal M04';
+        est.medio = 'Cierre de sesión';
         ausentesNuevos++;
       }
     });
     setRoster(r);
     store.set('sesion_activa', false);
-    registrarAuditoria('Cierre de sesión de asistencia (M04)', `Sesión cerrada. ${ausentesNuevos} estudiantes pasaron a Ausente.`, 'ABIERTA', 'CERRADA');
+    registrarAuditoria('Cierre de sesión de asistencia', `Sesión cerrada. ${ausentesNuevos} estudiantes pasaron a Ausente.`, 'ABIERTA', 'CERRADA');
     return ausentesNuevos;
   }
 
@@ -941,8 +945,8 @@
       if (banner) {
         banner.className = 'banner ' + (sesionActiva ? 'ok' : '');
         banner.textContent = sesionActiva
-          ? '✓ Sesión activa: registrando asistencia manual de contingencia en aula (M04 / RF-05).'
-          : '■ Sesión CERRADA: cualquier cambio solicitará confirmación (DEF-13), quedará registrado en la bitácora inmutable (M08) y recalculará el historial del estudiante (DEF-11).';
+          ? '✓ Sesión activa: registrando asistencia manual en aula.'
+          : '■ Sesión CERRADA: cualquier cambio solicitará confirmación, quedará registrado en la bitácora de auditoría y recalculará el historial del estudiante.';
       }
 
       const badgeHeader = $('#badge-estado-sesion');
@@ -1017,7 +1021,7 @@
       const sesionActiva = store.get('sesion_activa', true);
       if (!sesionActiva) {
         const okConfirm = confirm(
-          `Confirmación de corrección en sesión cerrada (M08 / RF-13):\n\n` +
+          `Confirmación de corrección en sesión cerrada:\n\n` +
           `Estudiante: ${est.nombre} (${est.codigo})\n` +
           `Valor anterior: ${anterior}\n` +
           `Nuevo valor: ${nuevoEstado}\n\n` +
@@ -1039,10 +1043,10 @@
 
       est.estado = nuevoEstado;
       est.hora = horaActual();
-      est.medio = sesionActiva ? 'Manual contingencia (M04)' : 'Corrección posterior (M08)';
+      est.medio = sesionActiva ? 'Manual en aula' : 'Corrección posterior';
       setRoster(r);
       registrarAuditoria(
-        sesionActiva ? 'Registro manual (M04)' : 'Corrección de registro (M08)',
+        sesionActiva ? 'Registro manual' : 'Corrección de registro',
         `Estudiante ${est.nombre} (${est.codigo}): ${anterior} -> ${nuevoEstado}`,
         anterior,
         nuevoEstado
@@ -1058,7 +1062,7 @@
         }
         const ausentesNuevos = await ejecutarCierreFormalSesion();
         pintarM04();
-        alert(`Sesión formalmente cerrada (M04).\n${ausentesNuevos} estudiantes pasaron a estado Ausente.`);
+        alert(`Sesión formalmente cerrada.\n${ausentesNuevos} estudiantes pasaron a estado Ausente.`);
       });
     }
 
@@ -1102,7 +1106,7 @@
       const m = Number(rawVal);
 
       if (!rawVal || !Number.isInteger(m) || m < 1 || m > 180) {
-        return msg($('#msg'), false, 'Rechazado (RF-10): Los minutos deben ser un número entero entre 1 y 180 minutos.');
+        return msg($('#msg'), false, 'Los minutos deben ser un número entero entre 1 y 180 minutos.');
       }
 
       const estNum = selEst ? Number(selEst.value) : 1;
@@ -1129,13 +1133,13 @@
         return msg(
           $('#msg'),
           false,
-          `Rechazado (RF-10): No es posible registrar «${tipoNovedad}» a ${estudiante ? estudiante.nombre : 'este estudiante'} porque su estado actual es «${estudiante ? estudiante.estado : 'Sin registro'}».`
+          `No es posible registrar «${tipoNovedad}» a ${estudiante ? estudiante.nombre : 'este estudiante'} porque su estado actual es «${estudiante ? estudiante.estado : 'Sin registro'}».`
         );
       }
 
       estudiante.novedad = { tipo: tipoNovedad, min: m, nota: nota || 'Sin observación adicional', hora: horaActual() };
       setRoster(r);
-      registrarAuditoria('Registro de novedad (M07)', `${tipoNovedad} (${m}m) para ${estudiante.nombre}`, 'Presente', `Presente · ${tipoNovedad} (${m}m)`);
+      registrarAuditoria('Registro de novedad', `${tipoNovedad} (${m}m) para ${estudiante.nombre}`, 'Presente', `Presente · ${tipoNovedad} (${m}m)`);
       msg($('#msg'), true, `Novedad «${tipoNovedad} (${m}m)» guardada exitosamente.`);
       setTimeout(() => { location.href = 'inicio.html'; }, 1000);
     });
@@ -1169,7 +1173,7 @@
               <span class="badge ${badgeClass}">${exc.estado}</span>
               <div style="background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12px">
                 <b>📄 ${exc.archivo || 'soporte.pdf'}</b><br>
-                <small class="muted" style="font-size:10px">GCS Verificado</small>
+                <small class="muted" style="font-size:10px">Soporte verificado</small>
               </div>
               <button type="button" class="btn neutral sm" data-preview="${exc.id}" style="width:auto;min-height:36px;color:var(--red);font-weight:700">Vista previa</button>
             </div>
@@ -1196,7 +1200,7 @@
         if (exc && $('#modal-soporte')) {
           $('#modal-soporte-titulo').textContent = `${exc.archivo} · ${exc.estudiante}`;
           $('#modal-soporte-body').innerHTML = `
-            <p style="margin:0 0 8px"><b>Contenedor C4:</b> Google Cloud Storage (<code>gs://uao-attendance-soportes-2026/${exc.archivo}</code>)</p>
+            <p style="margin:0 0 8px"><b>Almacenamiento:</b> Google Cloud Storage (<code>${exc.archivo}</code>)</p>
             <p style="margin:0 0 8px"><b>Estudiante Titular:</b> ${exc.estudiante} (Código: <code>${exc.codigo}</code>)</p>
             <p style="margin:0 0 8px"><b>Asignatura y Fecha de Ausencia:</b> ${exc.asig} · <code>${exc.fecha}</code></p>
             <p style="margin:0 0 8px"><b>Motivo Declarado:</b> "${exc.desc}"</p>
@@ -1224,7 +1228,7 @@
             msg(
               $('#msg-excusas'),
               true,
-              `Dictamen «${nuevoEstado}» guardado en SQLite para ${res.estudianteNombre} (${res.estudianteCodigo}). Historial individual actualizado: ${matEst ? matEst.aus : 0} falla(s) no just. y ${matEst ? matEst.just : 0} justificada(s).`
+              `Dictamen «${nuevoEstado}» guardado para ${res.estudianteNombre} (${res.estudianteCodigo}). Historial individual actualizado: ${matEst ? matEst.aus : 0} falla(s) no just. y ${matEst ? matEst.just : 0} justificada(s).`
             );
           }
           await cargarExcusas();
@@ -1343,7 +1347,7 @@
 
       const v = validarPin(pinIngresado);
       if (!v.ok) return msg($('#msg'), false, v.msg);
-      const resRegistro = marcarAsistenciaEstudiante(modo === 'QR' ? 'Escaneo QR móvil (M03)' : 'PIN de aula (M03)', estCod);
+      const resRegistro = marcarAsistenciaEstudiante(modo === 'QR' ? 'Escaneo QR móvil' : 'PIN de aula', estCod);
       msg($('#msg'), resRegistro.ok, resRegistro.msg);
       if (resRegistro.ok) setTimeout(() => { location.href = 'inicio.html'; }, 1200);
     };
@@ -1375,7 +1379,7 @@
           });
           if (res) return msg($('#msg'), false, res.msg);
         }
-        msg($('#msg'), false, 'Error RF-11: Estudiante no matriculado en este grupo académico (ISW1-G01). Registro rechazado.');
+        msg($('#msg'), false, 'Error: Estudiante no matriculado en este grupo académico (ISW1-G01). Registro rechazado.');
       });
     }
   }
@@ -1487,7 +1491,7 @@
         if (peor.f.nivel === 'rojo') {
           alertaEl.innerHTML = `
             <div class="banner bad">
-              ✕ <b>Riesgo crítico de pérdida en ${peor.m.n} (M05 · RF-09)</b><br>
+              ✕ <b>Riesgo crítico de pérdida en ${peor.m.n}</b><br>
               Tienes <b>${peor.f.pct}%</b> de inasistencias (${peor.m.aus} de ${peor.m.tot} sesiones). Has superado el límite máximo permitido del 20% (${peor.f.maxPermitidas} fallas). Conforme al Reglamento Estudiantil UAO, conlleva reprobación con nota 1,5.
               <div style="margin-top:6px"><a href="historial.html?asig=${peor.m.id}" style="font-weight:700;text-decoration:underline">Ver detalle ›</a></div>
             </div>`;
@@ -1498,7 +1502,7 @@
 
           alertaEl.innerHTML = `
             <div class="banner">
-              ⚠️ <b>Atención a ${peor.m.n} (Alerta preventiva 15% · RF-09)</b><br>
+              ⚠️ <b>Atención a ${peor.m.n}</b><br>
               Tienes <b>${peor.f.pct}%</b> de inasistencias (${peor.m.aus} de ${peor.m.tot} sesiones). El límite de pérdida es 20%. ${msgLimite}
               <div style="margin-top:6px"><a href="historial.html?asig=${peor.m.id}" style="font-weight:700;color:var(--warn)">Ver detalle ›</a></div>
             </div>`;
@@ -1706,7 +1710,7 @@
           if (!res.ok) {
             return msg($('#msg'), false, res.msg || 'Error al radicar la excusa.');
           }
-          msg($('#msg'), true, 'Excusa radicada en SQLite y soporte almacenado en Google Cloud Storage.');
+          msg($('#msg'), true, 'Excusa radicada exitosamente y soporte almacenado.');
           setTimeout(() => { location.href = 'historial.html'; }, 1200);
           return;
         }
@@ -1725,7 +1729,7 @@
         estado: 'Pendiente'
       });
       store.set('excusas', lista);
-      msg($('#msg'), true, 'Excusa radicada exitosamente con estado PENDIENTE (M06).');
+      msg($('#msg'), true, 'Excusa radicada exitosamente con estado PENDIENTE.');
       setTimeout(() => { location.href = 'historial.html'; }, 1200);
     });
   }

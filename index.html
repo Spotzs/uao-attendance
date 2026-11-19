@@ -38,10 +38,10 @@
       <p class="muted" style="margin:0 0 22px">Usa tus credenciales institucionales para continuar.</p>
 
       <label class="muted" for="user" style="font-weight:600;color:var(--text);font-size:12px">Usuario institucional</label>
-      <input class="input" id="user" value="sandra.guanarita" placeholder="sandra.guanarita@uao.edu.co" autocomplete="username">
+      <input class="input" id="user" placeholder="sandra.guanarita@uao.edu.co" autocomplete="username">
 
       <label class="muted" for="pass" style="font-weight:600;color:var(--text);font-size:12px">Contraseña</label>
-      <input class="input" id="pass" type="password" value="Uao2026*" placeholder="••••••••••" autocomplete="current-password">
+      <input class="input" id="pass" type="password" placeholder="••••••••••" autocomplete="current-password">
 
       <div style="font-weight:600;color:var(--text);font-size:12px;margin-bottom:6px">Ingresar como</div>
       <div class="tabs" id="roles">
@@ -60,37 +60,27 @@
         Protegido por el sistema de autenticación institucional UAO.
       </p>
 
-      <div class="sim-box" style="margin-top:20px">
-        <b>Verificación M01 (SSO Institucional UAO · RF-01):</b>
-        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
-          <button class="btn sec sm" id="sim-bad-login" type="button" style="width:auto">Probar credenciales inválidas (CP-02)</button>
-          <button class="btn neutral sm" id="sim-sso-down" type="button" style="width:auto">Simular caída SSO HTTP 503 (CP-03)</button>
-          <button class="btn neutral sm" id="toggle-reg-usuario" type="button" style="width:auto">+ Nuevo usuario en BD</button>
-        </div>
+      <div style="margin-top:18px;text-align:center">
+        <button class="btn neutral sm" id="toggle-reg-usuario" type="button" style="width:auto;min-height:36px;font-size:12px">Registrar nueva cuenta institucional</button>
+      </div>
 
-        <div id="box-reg-usuario" hidden style="margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)">
-          <b style="display:block;margin-bottom:6px">Registrar nuevo usuario en SQLite (Multi-usuario):</b>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <input class="input" id="reg-nombre" placeholder="Nombre completo" style="margin:0;min-height:38px">
-            <input class="input" id="reg-codigo" placeholder="Código (ej. 2249001)" style="margin:0;min-height:38px">
-            <input class="input" id="reg-user" placeholder="Usuario (ej. laura.gomez)" style="margin:0;min-height:38px">
-            <select class="input" id="reg-rol" style="margin:0;min-height:38px">
-              <option value="estudiante" selected>Estudiante</option>
-              <option value="docente">Docente</option>
-              <option value="director">Director</option>
-            </select>
-          </div>
-          <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
-            <button class="btn sm" id="btn-crear-usuario" type="button" style="width:auto">Guardar en BD y matricular</button>
-            <small class="muted">Clave por defecto: <code>Uao2026*</code></small>
-          </div>
-          <div class="banner" id="reg-msg" hidden style="margin-top:8px"></div>
+      <div id="box-reg-usuario" hidden style="margin-top:12px;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--bg)">
+        <b style="display:block;margin-bottom:8px;font-size:13px">Crear usuario institucional</b>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <input class="input" id="reg-nombre" placeholder="Nombre completo" style="margin:0;min-height:38px">
+          <input class="input" id="reg-codigo" placeholder="Código (ej. 2249001)" style="margin:0;min-height:38px">
+          <input class="input" id="reg-user" placeholder="Usuario (ej. laura.gomez)" style="margin:0;min-height:38px">
+          <input class="input" id="reg-pass" type="password" placeholder="Contraseña" style="margin:0;min-height:38px">
         </div>
-
-        <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
-          <small class="muted">Clave demo: <code>Uao2026*</code></small>
-          <a href="#" id="reset" style="color:var(--red);font-weight:600;font-size:12px">↺ Restablecer datos de prueba a fábrica</a>
+        <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+          <select class="input" id="reg-rol" style="margin:0;min-height:38px;max-width:150px">
+            <option value="estudiante" selected>Estudiante</option>
+            <option value="docente">Docente</option>
+            <option value="director">Director</option>
+          </select>
+          <button class="btn sm" id="btn-crear-usuario" type="button" style="width:auto;min-height:38px">Crear cuenta</button>
         </div>
+        <div class="banner" id="reg-msg" hidden style="margin-top:8px"></div>
       </div>
     </div>
   </div>
