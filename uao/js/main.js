@@ -1795,8 +1795,40 @@
 
       const tablaPrev = $('#tabla-reporte-preview');
       if (tablaPrev) {
+        const esVistaCompleta = !!$('#vista-reportes-completa');
         if (rep.sinDatos || !rep.filas.length) {
-          tablaPrev.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:18px;color:var(--muted)">No existen registros de asistencia para el periodo ${per} y grupo ${grpLabel}.</td></tr>`;
+          tablaPrev.innerHTML = `<tr><td colspan="${esVistaCompleta ? 9 : 6}" style="text-align:center;padding:18px;color:var(--muted)">No existen registros de asistencia para el periodo ${per} y grupo ${grpLabel}.</td></tr>`;
+        } else if (esVistaCompleta) {
+          tablaPrev.innerHTML = `
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>ESTUDIANTE</th>
+                <th>CÓDIGO</th>
+                <th>ASIGNATURA</th>
+                <th>GRUPO</th>
+                <th>AUSENCIAS</th>
+                <th>MEDIO</th>
+                <th>NOVEDAD</th>
+                <th>ESTADO</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rep.filas.map(f => `
+                <tr>
+                  <td>${f.n}</td>
+                  <td><b>${f.nombre}</b></td>
+                  <td><code>${f.codigo}</code></td>
+                  <td>${f.asignatura}</td>
+                  <td>${f.grupo}</td>
+                  <td>${typeof f.pctAusentismo === 'number' ? `<b>${f.pctAusentismo.toFixed(1)}%</b> <small class="muted">(${f.fallasAcumuladas}/${f.totalSesiones})</small>` : '—'}</td>
+                  <td>${f.medio || 'N/A'}</td>
+                  <td>${f.novedad || 'Ninguna'}</td>
+                  <td><span class="badge ${f.estado === 'Presente' ? 'b-ok' : f.estado === 'Ausente' ? 'b-bad' : 'b-warn'}">${f.estado}</span></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          `;
         } else {
           tablaPrev.innerHTML = `
             <thead>
@@ -1935,6 +1967,116 @@
 
     pintarRiesgo();
     if (isApiMode()) setInterval(pintarRiesgo, 3000);
+  }
+
+  if ($('#tabla-analitica-asignaturas')) {
+    const pintarAnalitica = async () => {
+      const fac = $('#analitica-facultad') ? $('#analitica-facultad').value : 'todas';
+      const perRaw = $('#analitica-periodo') ? $('#analitica-periodo').value : '2026-1';
+      const per = perRaw.replace(/\s*\(Actual\)/i, '').trim();
+
+      let rep = null;
+      let riesgoRes = null;
+      if (isApiMode()) {
+        rep = await apiRequest(
+          `/api/reportes?periodo=${encodeURIComponent(per)}&facultad=${encodeURIComponent(fac)}&asignatura=todas&grupo=todos`,
+          'GET'
+        );
+        riesgoRes = await apiRequest('/api/riesgo', 'GET');
+      }
+
+      const sinDatos = rep ? rep.sinDatos : (per === '2025-3');
+      const filas = rep && Array.isArray(rep.filas) ? rep.filas : (sinDatos ? [] : [
+        { asignaturaId: 'isw1', asignatura: 'Ingeniería de Software I', grupo: 'G01', pctAusentismo: 5.6 },
+        { asignaturaId: 'bd2', asignatura: 'Bases de Datos II', grupo: 'G01', pctAusentismo: 10.5 },
+        { asignaturaId: 'md', asignatura: 'Matemáticas Discretas', grupo: 'G01', pctAusentismo: 15.8 }
+      ]);
+
+      const msgEl = $('#msg-analitica');
+      if (sinDatos || !filas.length) {
+        if (msgEl) msg(msgEl, false, `Sin registros analíticos para el periodo ${per}.`);
+        if ($('#an-kpi-asistencia')) $('#an-kpi-asistencia').textContent = '0%';
+        if ($('#an-kpi-ausentismo')) $('#an-kpi-ausentismo').textContent = '0%';
+        if ($('#an-kpi-riesgo')) $('#an-kpi-riesgo').textContent = '0';
+        if ($('#an-kpi-cursos')) $('#an-kpi-cursos').textContent = '0';
+        if ($('#an-promedio-semanal')) $('#an-promedio-semanal').textContent = '0%';
+        $('#tabla-analitica-asignaturas').innerHTML = `<tr><td colspan="6" style="text-align:center;padding:18px;color:var(--muted)">No hay datos disponibles para el periodo ${per}.</td></tr>`;
+        return;
+      }
+
+      if (msgEl) msgEl.hidden = true;
+
+      const grupos = {};
+      filas.forEach(f => {
+        const key = f.asignaturaId || f.asignatura;
+        if (!grupos[key]) {
+          grupos[key] = { nombre: f.asignatura, grupo: f.grupo || 'G01', total: 0, sumaAus: 0, riesgo: 0 };
+        }
+        const pctAus = typeof f.pctAusentismo === 'number' ? f.pctAusentismo : 0;
+        grupos[key].total += 1;
+        grupos[key].sumaAus += pctAus;
+        if (pctAus >= 15) grupos[key].riesgo += 1;
+      });
+
+      const cursos = Object.values(grupos).map(c => {
+        const ausProm = Math.round((c.sumaAus / Math.max(1, c.total)) * 10) / 10;
+        const asisProm = Math.round((100 - ausProm) * 10) / 10;
+        return { ...c, ausProm, asisProm };
+      });
+
+      const ausGlobal = Math.round((cursos.reduce((acc, c) => acc + c.ausProm, 0) / Math.max(1, cursos.length)) * 10) / 10;
+      const asisGlobal = Math.round((100 - ausGlobal) * 10) / 10;
+      const totalRiesgo = riesgoRes && riesgoRes.ok && Array.isArray(riesgoRes.estudiantes)
+        ? riesgoRes.estudiantes.length
+        : cursos.reduce((acc, c) => acc + c.riesgo, 0);
+
+      if ($('#an-kpi-asistencia')) $('#an-kpi-asistencia').textContent = String(asisGlobal).replace('.', ',') + '%';
+      if ($('#an-kpi-ausentismo')) $('#an-kpi-ausentismo').textContent = String(ausGlobal).replace('.', ',') + '%';
+      if ($('#an-kpi-riesgo')) $('#an-kpi-riesgo').textContent = String(totalRiesgo);
+      if ($('#an-kpi-cursos')) $('#an-kpi-cursos').textContent = String(cursos.length);
+      if ($('#an-promedio-semanal')) $('#an-promedio-semanal').textContent = String(asisGlobal).replace('.', ',') + '%';
+
+      $('#tabla-analitica-asignaturas').innerHTML = `
+        <thead>
+          <tr>
+            <th>ASIGNATURA</th>
+            <th>GRUPO</th>
+            <th>ESTUDIANTES</th>
+            <th>ASISTENCIA</th>
+            <th>EN ALERTA (≥15%)</th>
+            <th>ESTADO</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${cursos.map(c => {
+            const clase = c.ausProm >= 15 ? 'b-bad' : c.ausProm >= 10 ? 'b-warn' : 'b-ok';
+            const etiqueta = c.ausProm >= 15 ? 'Crítico' : c.ausProm >= 10 ? 'Atención' : 'Óptimo';
+            const barColor = c.ausProm >= 15 ? 'var(--bad)' : c.ausProm >= 10 ? 'var(--warn)' : 'var(--ok)';
+            return `
+              <tr>
+                <td><b>${c.nombre}</b></td>
+                <td>${c.grupo}</td>
+                <td>${c.total}</td>
+                <td style="min-width:170px">
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <div class="bar" style="flex:1"><i style="width:${c.asisProm}%;background:${barColor}"></i></div>
+                    <b>${c.asisProm.toFixed(1)}%</b>
+                  </div>
+                </td>
+                <td><b>${c.riesgo}</b></td>
+                <td><span class="badge ${clase}">${etiqueta}</span></td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      `;
+    };
+
+    ['#analitica-facultad', '#analitica-periodo'].forEach(sel => {
+      if ($(sel)) $(sel).addEventListener('change', pintarAnalitica);
+    });
+    pintarAnalitica();
+    if (isApiMode()) setInterval(pintarAnalitica, 4000);
   }
 
 })();

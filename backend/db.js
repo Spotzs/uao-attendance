@@ -1215,7 +1215,7 @@ function crearUsuarioYMatricular({
         for (let s = 1; s <= a.tot; s++) {
           const fecha = s === 1 ? '2026-10-25' : (baseDates[s - 1] || `2026-08-${String(s).padStart(2, '0')}`);
           const st = s === 1 ? 'Ausente' : 'Presente';
-          const med = s === 1 ? 'Cierre formal M04' : 'QR / PIN';
+          const med = s === 1 ? 'Cierre de sesión' : 'QR / PIN';
           insertHist.run(cleanCodigo, a.id, fecha, s, st, med, s === a.tot ? 1 : 0);
         }
       }
@@ -1229,7 +1229,7 @@ function crearUsuarioYMatricular({
 
   registrarAuditoria({
     autor,
-    accion: 'Registro de usuario en BD (M01/M12)',
+    accion: 'Registro de usuario institucional',
     valorAnterior: 'No registrado',
     valorNuevo: `${cleanNombre} (${rol})`,
     detalle: `Usuario ${correo} (${cleanCodigo}) persistido en SQLite y matriculado en periodo 2026-1.`
