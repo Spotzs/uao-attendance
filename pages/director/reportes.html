@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reportes · Dirección · UAO Attendance</title>
+<link rel="stylesheet" href="../../css/styles.css">
+</head>
+<body>
+<div class="app">
+  <nav class="side">
+    <div>
+      <div class="brand-top side-brand" style="padding:4px 6px 12px">
+        <div class="uao-logo-box"><div class="uao-logo-circle">uao</div></div>
+        <div class="brand-text">
+          <b>UAO Attendance</b>
+          <small>Universidad Autónoma de Occidente</small>
+        </div>
+      </div>
+
+      <div class="side-section-label">MENÚ PRINCIPAL</div>
+      <div class="side-nav">
+        <a href="resumen.html"><span class="nav-left">⊞ Resumen</span></a>
+        <a href="analitica.html"><span class="nav-left">📈 Analítica</span></a>
+        <a href="estudiantes-riesgo.html"><span class="nav-left">👥 Estudiantes</span></a>
+        <a href="reportes.html" class="on"><span class="nav-left">📄 Reportes</span></a>
+      </div>
+    </div>
+
+    <div class="side-bottom">
+      <div class="period-box">
+        <span>📅</span>
+        <div>
+          <small>Periodo actual</small>
+          <b>2026-1</b>
+        </div>
+      </div>
+      <a class="out" href="../../index.html"><span class="nav-left">↪ Cerrar sesión</span></a>
+    </div>
+  </nav>
+
+  <div class="main-col">
+    <header class="topbar">
+      <div class="vista-switch">
+        <span>Vista</span>
+        <select id="switch-vista" aria-label="Cambiar vista de rol">
+          <option value="docente">Docente</option>
+          <option value="estudiante">Estudiante</option>
+          <option value="director" selected>Director</option>
+        </select>
+      </div>
+      <button class="bell-btn" type="button" title="Notificaciones">🔔</button>
+      <div class="user-pill">
+        <span class="avatar">CR</span>
+        <div class="user-pill-info">
+          <b>Carlos Ramírez</b>
+          <small>Director de programa</small>
+        </div>
+      </div>
+    </header>
+
+    <main class="content" id="vista-reportes-completa">
+      <div class="page-head">
+        <div>
+          <span class="date-eyebrow">EXPORTACIÓN Y CONSOLIDADOS · 2026-1</span>
+          <h1>Reportes institucionales</h1>
+          <p class="sub">Filtra por facultad, periodo, asignatura o grupo para consultar y exportar el consolidado oficial.</p>
+        </div>
+        <div class="actions">
+          <button class="btn neutral" id="exportar-csv" type="button" style="width:auto">↓ Exportar CSV</button>
+          <button class="btn" id="btn-pdf" type="button" style="width:auto">📄 Generar informe PDF</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px;padding:14px 18px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap">
+          <div style="display:flex;gap:12px;flex-wrap:wrap;flex:1">
+            <div style="min-width:170px;flex:1">
+              <label class="muted" for="filtro-facultad" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em">FACULTAD</label>
+              <select class="input" id="filtro-facultad" style="margin:4px 0 0">
+                <option value="todas" selected>Todas las facultades</option>
+                <option value="Ingeniería">Facultad de Ingeniería</option>
+              </select>
+            </div>
+            <div style="min-width:140px;flex:1">
+              <label class="muted" for="filtro-periodo" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em">PERIODO</label>
+              <select class="input" id="filtro-periodo" style="margin:4px 0 0">
+                <option value="2026-1" selected>2026-1</option>
+                <option value="2026-3">2026-3 (Actual)</option>
+                <option value="2025-3">2025-3</option>
+              </select>
+            </div>
+            <div style="min-width:190px;flex:1">
+              <label class="muted" for="filtro-asignatura" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em">ASIGNATURA</label>
+              <select class="input" id="filtro-asignatura" style="margin:4px 0 0">
+                <option value="isw1" selected>Ingeniería de Software I</option>
+                <option value="bd2">Bases de Datos II</option>
+                <option value="md">Matemáticas Discretas</option>
+                <option value="todas">Todas las asignaturas</option>
+              </select>
+            </div>
+            <div style="min-width:150px;flex:1">
+              <label class="muted" for="filtro-grupo" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em">GRUPO</label>
+              <select class="input" id="filtro-grupo" style="margin:4px 0 0">
+                <option value="G01" selected>Grupo 01 (G01)</option>
+                <option value="todos">Todos los grupos</option>
+                <option value="G02">Grupo 02 (G02)</option>
+              </select>
+            </div>
+          </div>
+
+          <small style="color:var(--ok);font-weight:600;font-size:12px;white-space:nowrap">● Listo para exportar</small>
+        </div>
+
+        <div class="banner" id="msg-reporte" role="alert" hidden></div>
+      </div>
+
+      <div class="kpis">
+        <div class="card kpi-card">
+          <span class="kpi-icon" style="background:var(--blue-bg);color:var(--blue)">👥</span>
+          <div>
+            <small class="muted">Registros en reporte</small>
+            <b id="kpi-activos">30</b>
+            <small class="muted" style="font-size:11px">Según filtros activos</small>
+          </div>
+        </div>
+        <div class="card kpi-card">
+          <span class="kpi-icon" style="background:var(--ok-bg);color:var(--ok)">📈</span>
+          <div>
+            <small class="muted">Ausentismo del filtro</small>
+            <b id="kpi-ausentismo">0%</b>
+            <small class="muted" style="font-size:11px">Promedio calculado</small>
+          </div>
+        </div>
+        <div class="card kpi-card">
+          <span class="kpi-icon" style="background:var(--warnbg);color:var(--warn)">⚠️</span>
+          <div>
+            <small class="muted">En riesgo (≥15%)</small>
+            <b id="kpi-riesgo">0</b>
+            <small class="muted" style="font-size:11px">Requieren seguimiento</small>
+          </div>
+        </div>
+        <div class="card kpi-card">
+          <span class="kpi-icon" style="background:var(--red-soft);color:var(--red)">📄</span>
+          <div>
+            <small class="muted">Excusas pendientes</small>
+            <b id="kpi-excusas">0</b>
+            <small class="muted" style="font-size:11px">Por revisar</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+          <div>
+            <span class="date-eyebrow" style="margin-bottom:2px">CONSOLIDADO COMPLETO</span>
+            <b style="font-size:18px;display:block" id="titulo-tabla-filtrada">Registros filtrados del reporte</b>
+            <small class="muted" id="sub-tabla-filtrada">Listado completo que se incluirá al exportar en CSV o imprimir como PDF.</small>
+          </div>
+          <a href="analitica.html" style="color:var(--red);font-weight:700;font-size:13px">Ver analítica ›</a>
+        </div>
+
+        <div class="scroll">
+          <table id="tabla-reporte-preview"></table>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<script src="../../js/main.js"></script>
+</body>
+</html>
