@@ -41,14 +41,22 @@
     </div>
 
     <div id="sec-qr" style="display:none;text-align:center;padding:8px 0">
-      <div class="view">
-        <div class="scan-line"></div>
-        <span style="font-size:28px;color:var(--red)">📷</span>
-        <small style="opacity:0.8;margin-top:8px">Cámara activa</small>
+      <div class="view" id="qr-scanner-box">
+        <video id="qr-video" playsinline muted autoplay style="display:none"></video>
+        <canvas id="qr-canvas" hidden></canvas>
+        <div class="scan-line" id="qr-scan-line"></div>
+        <div id="qr-placeholder" class="qr-placeholder">
+          <span style="font-size:28px;color:var(--red)">📷</span>
+          <small id="qr-cam-status" style="opacity:0.9;margin-top:8px">Listo para escanear</small>
+        </div>
       </div>
-      <b style="font-size:15px;display:block">Apunta al código del proyector</b>
-      <p class="muted" style="margin:4px 0 16px">La cámara detectará el QR automáticamente.</p>
-      <button class="btn" id="simqr" type="button" style="max-width:240px;margin:0 auto">Simular escaneo</button>
+      <b style="font-size:15px;display:block">Apunta al código QR del proyector</b>
+      <p class="muted" style="margin:4px 0 14px">La cámara leerá el QR automáticamente y registrará tu asistencia en vivo.</p>
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:260px;margin:0 auto">
+        <button class="btn" id="simqr" type="button">📷 Activar cámara</button>
+        <label class="btn neutral" for="qr-file-input" style="cursor:pointer">🖼️ Escanear desde foto / imagen</label>
+        <input type="file" id="qr-file-input" accept="image/*" capture="environment" hidden>
+      </div>
     </div>
 
     <div class="banner" id="msg" role="alert" hidden></div>
@@ -65,6 +73,7 @@
   </div>
 </nav>
 
+<script src="../../js/jsQR.js"></script>
 <script src="../../js/main.js"></script>
 </body>
 </html>
