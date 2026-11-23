@@ -20,22 +20,22 @@
 
       <div class="side-section-label">MENÚ PRINCIPAL</div>
       <div class="side-nav">
-        <a href="inicio.html"><span class="nav-left">⊞ Inicio</span></a>
-        <a href="registro-manual.html"><span class="nav-left">📷 Lista manual</span></a>
-        <a href="bitacora.html" class="on"><span class="nav-left">🕒 Historial / Bitácora</span></a>
-        <a href="excusas.html"><span class="nav-left">📄 Excusas</span><span class="nav-count" id="nav-exc-count">3</span></a>
+        <a href="inicio.html"><span class="nav-left"><i class="ic" data-ic="grid"></i> Inicio</span></a>
+        <a href="registro-manual.html"><span class="nav-left"><i class="ic" data-ic="camera"></i> Lista manual</span></a>
+        <a href="bitacora.html" class="on"><span class="nav-left"><i class="ic" data-ic="clock"></i> Historial</span></a>
+        <a href="excusas.html"><span class="nav-left"><i class="ic" data-ic="file"></i> Excusas</span><span class="nav-count" id="nav-exc-count">3</span></a>
       </div>
     </div>
 
     <div class="side-bottom">
       <div class="period-box">
-        <span>📅</span>
+        <i class="ic" data-ic="calendar"></i>
         <div>
           <small>Periodo actual</small>
           <b>2026-1</b>
         </div>
       </div>
-      <a class="out" href="../../index.html"><span class="nav-left">↪ Cerrar sesión</span></a>
+      <a class="out" href="../../index.html"><span class="nav-left"><i class="ic" data-ic="logout"></i> Cerrar sesión</span></a>
     </div>
   </nav>
 
@@ -49,13 +49,14 @@
           <option value="director">Director</option>
         </select>
       </div>
-      <button class="bell-btn" type="button" title="Notificaciones" onclick="location.href='excusas.html'">🔔</button>
+      <button class="bell-btn" type="button" title="Notificaciones" onclick="location.href='excusas.html'"><i class="ic" data-ic="bell"></i></button>
       <div class="user-pill">
         <span class="avatar">SG</span>
         <div class="user-pill-info">
           <b>Sandra Guañarita</b>
           <small>Docente</small>
         </div>
+        <i class="ic sm pill-caret" data-ic="chevron-right"></i>
       </div>
     </header>
 
@@ -67,8 +68,8 @@
           <p class="sub">Registro cronológico e inmutable de aperturas, cierres, excusas y correcciones de asistencia.</p>
         </div>
         <div class="actions">
-          <span class="badge b-ok" style="min-height:38px;padding:6px 14px">🔒 Auditoría Inmutable Activa (Append-Only)</span>
-          <a class="btn sec sm link" href="registro-manual.html">Ir a Lista manual ›</a>
+          <span class="badge b-ok" style="min-height:40px;padding:6px 14px"><i class="ic sm" data-ic="lock"></i> Auditoría inmutable activa</span>
+          <a class="btn neutral sm link" href="registro-manual.html">Ir a Lista manual <i class="ic sm" data-ic="chevron-right"></i></a>
         </div>
       </div>
 
@@ -81,7 +82,7 @@
                 <th>Autor / Rol</th>
                 <th>Acción Realizada</th>
                 <th>Cambio (Anterior → Nuevo)</th>
-                <th>Detalle Técnico</th>
+                <th>Detalle</th>
               </tr>
             </thead>
             <tbody id="cuerpo-bitacora"></tbody>

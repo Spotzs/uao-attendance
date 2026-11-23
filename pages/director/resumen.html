@@ -20,22 +20,22 @@
 
       <div class="side-section-label">MENÚ PRINCIPAL</div>
       <div class="side-nav">
-        <a href="resumen.html" class="on"><span class="nav-left">⊞ Resumen</span></a>
-        <a href="analitica.html"><span class="nav-left">📈 Analítica</span></a>
-        <a href="estudiantes-riesgo.html"><span class="nav-left">👥 Estudiantes</span></a>
-        <a href="reportes.html"><span class="nav-left">📄 Reportes</span></a>
+        <a href="resumen.html" class="on"><span class="nav-left"><i class="ic" data-ic="grid"></i> Resumen</span></a>
+        <a href="analitica.html"><span class="nav-left"><i class="ic" data-ic="trend"></i> Analítica</span></a>
+        <a href="estudiantes-riesgo.html"><span class="nav-left"><i class="ic" data-ic="users"></i> Estudiantes</span></a>
+        <a href="reportes.html"><span class="nav-left"><i class="ic" data-ic="file"></i> Reportes</span></a>
       </div>
     </div>
 
     <div class="side-bottom">
       <div class="period-box">
-        <span>📅</span>
+        <i class="ic" data-ic="calendar"></i>
         <div>
           <small>Periodo actual</small>
           <b>2026-1</b>
         </div>
       </div>
-      <a class="out" href="../../index.html"><span class="nav-left">↪ Cerrar sesión</span></a>
+      <a class="out" href="../../index.html"><span class="nav-left"><i class="ic" data-ic="logout"></i> Cerrar sesión</span></a>
     </div>
   </nav>
 
@@ -49,13 +49,14 @@
           <option value="director" selected>Director</option>
         </select>
       </div>
-      <button class="bell-btn" type="button" title="Notificaciones">🔔</button>
+      <button class="bell-btn" type="button" title="Notificaciones"><i class="ic" data-ic="bell"></i></button>
       <div class="user-pill">
         <span class="avatar">CR</span>
         <div class="user-pill-info">
           <b>Carlos Ramírez</b>
           <small>Director de programa</small>
         </div>
+        <i class="ic sm pill-caret" data-ic="chevron-right"></i>
       </div>
     </header>
 
@@ -67,32 +68,32 @@
           <p class="sub">Monitorea tendencias y anticipa riesgos en toda la comunidad.</p>
         </div>
         <div class="actions">
-          <button class="btn neutral" id="exportar-csv" type="button" style="width:auto">↓ Exportar CSV</button>
-          <button class="btn" id="btn-pdf" type="button" style="width:auto">📄 Generar informe PDF</button>
+          <button class="btn neutral" id="exportar-csv" type="button" style="width:auto"><i class="ic sm" data-ic="download"></i> Exportar CSV</button>
+          <button class="btn" id="btn-pdf" type="button" style="width:auto"><i class="ic sm" data-ic="file"></i> Generar informe PDF</button>
         </div>
       </div>
 
-      <div class="card" id="sec-reportes" style="margin-bottom:16px;padding:14px 18px">
+      <div class="card" id="sec-reportes" style="margin-bottom:18px;padding:16px 20px">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap">
           <div style="display:flex;gap:12px;flex-wrap:wrap;flex:1">
             <div style="min-width:170px;flex:1">
-              <label class="muted" for="filtro-facultad" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em">FACULTAD</label>
-              <select class="input" id="filtro-facultad" style="margin:4px 0 0">
+              <label class="muted" for="filtro-facultad" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em">FACULTAD</label>
+              <select class="input" id="filtro-facultad" style="margin:5px 0 0">
                 <option value="todas" selected>Todas las facultades</option>
                 <option value="Ingeniería">Facultad de Ingeniería</option>
               </select>
             </div>
             <div style="min-width:140px;flex:1">
-              <label class="muted" for="filtro-periodo" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em">PERIODO</label>
-              <select class="input" id="filtro-periodo" style="margin:4px 0 0">
+              <label class="muted" for="filtro-periodo" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em">PERIODO</label>
+              <select class="input" id="filtro-periodo" style="margin:5px 0 0">
                 <option value="2026-1" selected>2026-1</option>
                 <option value="2026-3">2026-3 (Actual)</option>
                 <option value="2025-3">2025-3</option>
               </select>
             </div>
             <div style="min-width:190px;flex:1">
-              <label class="muted" for="filtro-asignatura" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em">ASIGNATURA</label>
-              <select class="input" id="filtro-asignatura" style="margin:4px 0 0">
+              <label class="muted" for="filtro-asignatura" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em">ASIGNATURA</label>
+              <select class="input" id="filtro-asignatura" style="margin:5px 0 0">
                 <option value="isw1" selected>Ingeniería de Software I</option>
                 <option value="bd2">Bases de Datos II</option>
                 <option value="md">Matemáticas Discretas</option>
@@ -100,8 +101,8 @@
               </select>
             </div>
             <div style="min-width:150px;flex:1">
-              <label class="muted" for="filtro-grupo" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em">GRUPO</label>
-              <select class="input" id="filtro-grupo" style="margin:4px 0 0">
+              <label class="muted" for="filtro-grupo" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em">GRUPO</label>
+              <select class="input" id="filtro-grupo" style="margin:5px 0 0">
                 <option value="G01" selected>Grupo 01 (G01)</option>
                 <option value="todos">Todos los grupos</option>
                 <option value="G02">Grupo 02 (G02)</option>
@@ -109,7 +110,7 @@
             </div>
           </div>
 
-          <small style="color:var(--ok);font-weight:600;font-size:12px;white-space:nowrap">● Datos actualizados hace 3 min</small>
+          <small style="color:var(--ok-bright);font-weight:600;font-size:12px;white-space:nowrap">● Datos actualizados hace 3 min</small>
         </div>
 
         <div class="banner" id="msg-reporte" role="alert" hidden></div>
@@ -117,7 +118,7 @@
 
       <div class="kpis">
         <div class="card kpi-card">
-          <span class="kpi-icon" style="background:var(--blue-bg);color:var(--blue)">👥</span>
+          <span class="kpi-icon" style="background:var(--blue-bg);color:var(--blue)"><i class="ic lg" data-ic="users"></i></span>
           <div>
             <small class="muted">Estudiantes activos</small>
             <b id="kpi-activos">3.606</b>
@@ -125,7 +126,7 @@
           </div>
         </div>
         <div class="card kpi-card">
-          <span class="kpi-icon" style="background:var(--ok-bg);color:var(--ok)">📈</span>
+          <span class="kpi-icon" style="background:var(--ok-bg);color:var(--ok)"><i class="ic lg" data-ic="trend"></i></span>
           <div>
             <small class="muted">Ausentismo general</small>
             <b id="kpi-ausentismo">8,9%</b>
@@ -133,7 +134,7 @@
           </div>
         </div>
         <div class="card kpi-card">
-          <span class="kpi-icon" style="background:var(--warnbg);color:var(--warn)">⚠️</span>
+          <span class="kpi-icon" style="background:#FEF3C7;color:var(--warn)"><i class="ic lg" data-ic="alert"></i></span>
           <div>
             <small class="muted">Estudiantes en riesgo</small>
             <b id="kpi-riesgo">184</b>
@@ -141,7 +142,7 @@
           </div>
         </div>
         <div class="card kpi-card">
-          <span class="kpi-icon" style="background:var(--red-soft);color:var(--red)">📄</span>
+          <span class="kpi-icon" style="background:var(--red-soft);color:var(--red)"><i class="ic lg" data-ic="file"></i></span>
           <div>
             <small class="muted">Excusas pendientes</small>
             <b id="kpi-excusas">47</b>
@@ -154,8 +155,8 @@
         <div class="card">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
             <div>
-              <span class="date-eyebrow" style="margin-bottom:2px">TENDENCIA SEMESTRAL</span>
-              <b style="font-size:18px;display:block">Asistencia semanal</b>
+              <span class="date-eyebrow" style="margin-bottom:3px">TENDENCIA SEMESTRAL</span>
+              <b style="font-size:19px;display:block;letter-spacing:-0.015em">Asistencia semanal</b>
               <small class="muted">Promedio institucional por semana académica</small>
             </div>
             <div style="text-align:right">
@@ -165,59 +166,96 @@
           </div>
 
           <div class="chart-wrap">
-            <div class="chart">
-              <div class="chart-col"><i style="height:64%" title="S1: 64%"></i><small>S1</small></div>
-              <div class="chart-col"><i style="height:74%" title="S2: 74%"></i><small>S2</small></div>
-              <div class="chart-col"><i style="height:58%" title="S3: 58%"></i><small>S3</small></div>
-              <div class="chart-col"><i style="height:84%" title="S4: 84%"></i><small>S4</small></div>
-              <div class="chart-col"><i style="height:76%" title="S5: 76%"></i><small>S5</small></div>
-              <div class="chart-col"><i style="height:93%" title="S6: 93%"></i><small>S6</small></div>
-              <div class="chart-col"><i style="height:71%" title="S7: 71%"></i><small>S7</small></div>
-              <div class="chart-col"><i class="hl" style="height:81%" title="S8: 81%"></i><small>S8</small></div>
-              <div class="chart-col"><i style="height:67%" title="S9: 67%"></i><small>S9</small></div>
-              <div class="chart-col"><i style="height:60%" title="S10: 60%"></i><small>S10</small></div>
-              <div class="chart-col"><i style="height:77%" title="S11: 77%"></i><small>S11</small></div>
-              <div class="chart-col"><i style="height:68%" title="S12: 68%"></i><small>S12</small></div>
+            <div class="chart-grid">
+              <div class="chart-yaxis">
+                <span>100%</span>
+                <span>75%</span>
+                <span>50%</span>
+                <span>25%</span>
+                <span>0%</span>
+              </div>
+              <div class="chart">
+                <div class="chart-col"><i style="height:64%" title="S1: 64%"></i><small>S1</small></div>
+                <div class="chart-col"><i style="height:74%" title="S2: 74%"></i><small>S2</small></div>
+                <div class="chart-col"><i style="height:58%" title="S3: 58%"></i><small>S3</small></div>
+                <div class="chart-col"><i style="height:84%" title="S4: 84%"></i><small>S4</small></div>
+                <div class="chart-col"><i style="height:76%" title="S5: 76%"></i><small>S5</small></div>
+                <div class="chart-col"><i style="height:93%" title="S6: 93%"></i><small>S6</small></div>
+                <div class="chart-col"><i style="height:71%" title="S7: 71%"></i><small>S7</small></div>
+                <div class="chart-col"><i class="hl" style="height:81%" title="S8: 81%"></i><small>S8</small></div>
+                <div class="chart-col"><i style="height:67%" title="S9: 67%"></i><small>S9</small></div>
+                <div class="chart-col"><i style="height:60%" title="S10: 60%"></i><small>S10</small></div>
+                <div class="chart-col"><i style="height:77%" title="S11: 77%"></i><small>S11</small></div>
+                <div class="chart-col"><i style="height:68%" title="S12: 68%"></i><small>S12</small></div>
+              </div>
             </div>
           </div>
         </div>
 
         <div class="card">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
             <div>
-              <span class="date-eyebrow" style="margin-bottom:2px">POR FACULTAD</span>
-              <b style="font-size:18px">Tasa de ausentismo</b>
+              <span class="date-eyebrow" style="margin-bottom:3px">POR FACULTAD</span>
+              <b style="font-size:19px;letter-spacing:-0.015em">Tasa de ausentismo</b>
             </div>
-            <a href="estudiantes-riesgo.html" style="color:var(--red);font-size:12px;font-weight:700">Ver detalle ›</a>
+            <a href="analitica.html" class="link-red" style="min-height:auto;padding:0;font-size:12px">Ver detalle <i class="ic sm" data-ic="chevron-right"></i></a>
           </div>
 
           <div class="row">
-            <div><b>1 &nbsp; Ingeniería</b><br><small class="muted">1.240 estudiantes</small></div>
-            <div style="text-align:right"><b>6,4%</b> <small style="color:var(--ok)">↑ 1.2%</small></div>
+            <div style="display:flex;align-items:center;gap:11px">
+              <span class="rank-num">1</span>
+              <div><b>Ingeniería</b><br><small class="muted">1.240 estudiantes</small></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="fac-mini-bar"><i style="width:64%"></i></span>
+              <b>6,4%</b>
+              <small style="color:var(--ok-bright);min-width:42px;text-align:right">↓ 1.2%</small>
+            </div>
           </div>
           <div class="row">
-            <div><b>2 &nbsp; Ciencias Económicas</b><br><small class="muted">980 estudiantes</small></div>
-            <div style="text-align:right"><b>10,7%</b> <small style="color:var(--bad)">↑ 0.8%</small></div>
+            <div style="display:flex;align-items:center;gap:11px">
+              <span class="rank-num">2</span>
+              <div><b>Ciencias Económicas</b><br><small class="muted">980 estudiantes</small></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="fac-mini-bar"><i style="width:86%"></i></span>
+              <b>10,7%</b>
+              <small style="color:var(--bad);min-width:42px;text-align:right">↑ 0.8%</small>
+            </div>
           </div>
           <div class="row">
-            <div><b>3 &nbsp; Humanidades</b><br><small class="muted">740 estudiantes</small></div>
-            <div style="text-align:right"><b>7,2%</b> <small style="color:var(--ok)">↓ 0.5%</small></div>
+            <div style="display:flex;align-items:center;gap:11px">
+              <span class="rank-num">3</span>
+              <div><b>Humanidades</b><br><small class="muted">740 estudiantes</small></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="fac-mini-bar"><i style="width:58%"></i></span>
+              <b>7,2%</b>
+              <small style="color:var(--ok-bright);min-width:42px;text-align:right">↓ 0.5%</small>
+            </div>
           </div>
           <div class="row">
-            <div><b>4 &nbsp; Comunicación</b><br><small class="muted">646 estudiantes</small></div>
-            <div style="text-align:right"><b>9,1%</b> <small style="color:var(--warn)">↑ 0.3%</small></div>
+            <div style="display:flex;align-items:center;gap:11px">
+              <span class="rank-num">4</span>
+              <div><b>Comunicación</b><br><small class="muted">646 estudiantes</small></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="fac-mini-bar"><i style="width:74%"></i></span>
+              <b>9,1%</b>
+              <small style="color:var(--warn-bright);min-width:42px;text-align:right">↑ 0.3%</small>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="card" style="margin-top:16px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <div class="card" style="margin-top:18px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
           <div>
-            <span class="date-eyebrow" style="margin-bottom:2px">ATENCIÓN PRIORITARIA</span>
-            <b style="font-size:18px;display:block" id="titulo-tabla-filtrada">Registros filtrados del reporte</b>
+            <span class="date-eyebrow" style="margin-bottom:3px">ATENCIÓN PRIORITARIA</span>
+            <b style="font-size:19px;display:block;letter-spacing:-0.015em" id="titulo-tabla-filtrada">Registros filtrados del reporte</b>
             <small class="muted" id="sub-tabla-filtrada">Vista previa de los registros que se exportarán en CSV / PDF según los filtros seleccionados.</small>
           </div>
-          <a href="estudiantes-riesgo.html" style="color:var(--red);font-weight:700;font-size:13px">Ver estudiantes en riesgo (≥15%) ›</a>
+          <a href="estudiantes-riesgo.html" class="link-red" style="min-height:auto;padding:0">Ver estudiantes en riesgo (≥15%) <i class="ic sm" data-ic="chevron-right"></i></a>
         </div>
 
         <div class="scroll">

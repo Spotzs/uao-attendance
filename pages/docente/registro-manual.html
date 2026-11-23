@@ -20,22 +20,22 @@
 
       <div class="side-section-label">MENÚ PRINCIPAL</div>
       <div class="side-nav">
-        <a href="inicio.html"><span class="nav-left">⊞ Inicio</span></a>
-        <a href="registro-manual.html" class="on"><span class="nav-left">📷 Lista manual</span></a>
-        <a href="bitacora.html"><span class="nav-left">🕒 Historial / Bitácora</span></a>
-        <a href="excusas.html"><span class="nav-left">📄 Excusas</span><span class="nav-count" id="nav-exc-count">3</span></a>
+        <a href="inicio.html"><span class="nav-left"><i class="ic" data-ic="grid"></i> Inicio</span></a>
+        <a href="registro-manual.html" class="on"><span class="nav-left"><i class="ic" data-ic="camera"></i> Lista manual</span></a>
+        <a href="bitacora.html"><span class="nav-left"><i class="ic" data-ic="clock"></i> Historial</span></a>
+        <a href="excusas.html"><span class="nav-left"><i class="ic" data-ic="file"></i> Excusas</span><span class="nav-count" id="nav-exc-count">3</span></a>
       </div>
     </div>
 
     <div class="side-bottom">
       <div class="period-box">
-        <span>📅</span>
+        <i class="ic" data-ic="calendar"></i>
         <div>
           <small>Periodo actual</small>
           <b>2026-1</b>
         </div>
       </div>
-      <a class="out" href="../../index.html"><span class="nav-left">↪ Cerrar sesión</span></a>
+      <a class="out" href="../../index.html"><span class="nav-left"><i class="ic" data-ic="logout"></i> Cerrar sesión</span></a>
     </div>
   </nav>
 
@@ -49,13 +49,14 @@
           <option value="director">Director</option>
         </select>
       </div>
-      <button class="bell-btn" type="button" title="Notificaciones" onclick="location.href='excusas.html'">🔔</button>
+      <button class="bell-btn" type="button" title="Notificaciones" onclick="location.href='excusas.html'"><i class="ic" data-ic="bell"></i></button>
       <div class="user-pill">
         <span class="avatar">SG</span>
         <div class="user-pill-info">
           <b>Sandra Guañarita</b>
           <small>Docente</small>
         </div>
+        <i class="ic sm pill-caret" data-ic="chevron-right"></i>
       </div>
     </header>
 
@@ -76,9 +77,9 @@
 
       <div class="session-bar">
         <div class="session-bar-left">
-          <div class="session-icon-box">🖥️</div>
+          <div class="session-icon-box"><i class="ic lg" data-ic="monitor"></i></div>
           <div>
-            <small style="font-size:10px;color:#94A3B8;text-transform:uppercase;letter-spacing:0.06em;font-weight:700">SESIÓN ACTUAL</small>
+            <small style="font-size:10px;color:#94A3B8;text-transform:uppercase;letter-spacing:0.07em;font-weight:700">SESIÓN ACTUAL</small>
             <div class="session-bar-title">
               <b>Ingeniería de Software I</b>
               <span class="live-pill" id="badge-estado-sesion">● EN VIVO</span>
@@ -105,14 +106,14 @@
           </div>
 
           <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;flex:1;justify-content:flex-end">
-            <input class="input" id="buscar" placeholder="🔍 Buscar estudiante o código..." style="max-width:280px;margin:0">
+            <input class="input" id="buscar" placeholder="Buscar estudiante o código..." style="max-width:280px;margin:0">
             <button class="btn danger sm" id="btn-cierre-manual-pantalla" type="button" style="width:auto">Finalizar y cerrar sesión</button>
           </div>
         </div>
 
         <div style="margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
           <span class="muted" id="cnt" style="font-weight:600;font-size:12px"></span>
-          <a href="bitacora.html" style="color:var(--red);font-size:12px;font-weight:700">Ver bitácora de auditoría ›</a>
+          <a href="bitacora.html" class="link-red" style="min-height:auto;padding:0;font-size:12px">Ver bitácora de auditoría <i class="ic sm" data-ic="chevron-right"></i></a>
         </div>
 
         <div class="scroll">

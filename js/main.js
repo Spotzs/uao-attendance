@@ -4,6 +4,51 @@
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => [...document.querySelectorAll(s)];
 
+  const ICONS = {
+    grid: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/>',
+    camera: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
+    clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    file: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/>',
+    calendar: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/>',
+    logout: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/>',
+    bell: '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>',
+    shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>',
+    users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    trend: '<path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/>',
+    alert: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+    download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/>',
+    check: '<path d="M20 6 9 17l-5-5"/>',
+    'check-circle': '<circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/>',
+    monitor: '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>',
+    user: '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+    lock: '<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+    'chevron-right': '<path d="m9 18 6-6-6-6"/>',
+    home: '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+    plus: '<path d="M12 5v14"/><path d="M5 12h14"/>',
+    book: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+    image: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>',
+    hash: '<path d="M4 9h16"/><path d="M4 15h16"/><path d="M10 3 8 21"/><path d="M16 3l-2 18"/>',
+    close: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+    stop: '<rect x="6" y="6" width="12" height="12" rx="2"/>'
+  };
+
+  function svgIcon(name, extraClass = '') {
+    const body = ICONS[name] || '';
+    return `<i class="ic ${extraClass}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">${body}</svg></i>`;
+  }
+
+  function hidratarIconos(root = document) {
+    root.querySelectorAll('[data-ic]').forEach(el => {
+      const name = el.getAttribute('data-ic');
+      const body = ICONS[name];
+      if (!body) return;
+      el.setAttribute('aria-hidden', 'true');
+      el.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`;
+    });
+  }
+
+  hidratarIconos();
+
   const isApiMode = () => typeof fetch === 'function' && location.protocol !== 'file:';
 
   const store = {
@@ -843,22 +888,34 @@
         lastQrStateRendered = qrStateKey;
       }
 
+      const ringProg = $('#pin-ring-prog');
+      const setRingRatio = (ratio) => {
+        if (!ringProg) return;
+        const c = 125.66;
+        const clamped = Math.max(0, Math.min(1, ratio));
+        ringProg.style.strokeDasharray = String(c);
+        ringProg.style.strokeDashoffset = String(c * (1 - clamped));
+      };
+
       if (!sesionActiva) {
         $('#pin').textContent = '----';
         $('#count').textContent = '0';
+        setRingRatio(0);
         if ($('#token-status-title')) $('#token-status-title').textContent = 'Sesión cerrada';
         if ($('#token-status-sub')) $('#token-status-sub').textContent = 'El marcado por QR y PIN ha finalizado';
         if ($('#sub-estado-pin')) $('#sub-estado-pin').textContent = 'Registro autónomo cerrado';
       } else if (redDocenteCaida) {
         $('#pin').textContent = p.code;
         $('#count').textContent = '60';
+        setRingRatio(1);
         if ($('#token-status-title')) $('#token-status-title').textContent = 'PIN retenido (Sin conexión)';
         if ($('#token-status-sub')) $('#token-status-sub').textContent = 'Vigencia extendida mientras dura la falla de red';
         if ($('#sub-estado-pin')) $('#sub-estado-pin').textContent = 'Modo sin conexión activo';
       } else {
         $('#pin').textContent = p.code;
-        const segRestantes = Math.max(1, Math.ceil((p.exp - Date.now()) / 1000));
+        const segRestantes = Math.max(1, Math.min(60, Math.ceil((p.exp - Date.now()) / 1000)));
         $('#count').textContent = segRestantes;
+        setRingRatio(segRestantes / 60);
         if ($('#token-status-title')) $('#token-status-title').textContent = 'Token activo';
         if ($('#token-status-sub')) $('#token-status-sub').textContent = 'Expira en menos de un minuto';
         if ($('#sub-estado-pin')) $('#sub-estado-pin').textContent = 'Se renueva automáticamente';
@@ -893,10 +950,10 @@
 
       const ultEl = $('#ultimos');
       if (ultEl) {
-        const avatarColors = ['', 'amber', 'green', 'blue', 'purple'];
+        const avatarColors = ['blue', 'amber', 'green', 'purple', ''];
         ultEl.innerHTML = pres.slice(-4).reverse().map((x, idx) => `
-          <div class="row" style="padding:9px 0">
-            <div style="display:flex;align-items:center;gap:10px">
+          <div class="row" style="padding:10px 0">
+            <div style="display:flex;align-items:center;gap:11px">
               <span class="avatar ${avatarColors[idx % avatarColors.length]}">${x.iniciales || obtenerIniciales(x.nombre)}</span>
               <div>
                 <b style="font-size:13px;display:block">${x.nombre}</b>
@@ -904,8 +961,8 @@
               </div>
             </div>
             <div style="display:flex;align-items:center;gap:8px">
-              <span style="color:var(--ok);font-weight:700">✓</span>
-              <small class="muted">${x.hora || '08:02'}</small>
+              <span style="color:var(--ok-bright);display:inline-flex">${svgIcon('check-circle', 'sm')}</span>
+              <small class="muted" style="font-variant-numeric:tabular-nums">${x.hora || '08:02'}</small>
             </div>
           </div>
         `).join('');
@@ -1414,7 +1471,7 @@
         videoEl.style.display = 'none';
       }
       if (placeholderEl) placeholderEl.style.display = 'flex';
-      if (btnCamara) btnCamara.textContent = '📷 Activar cámara';
+      if (btnCamara) btnCamara.innerHTML = `${svgIcon('camera', 'sm')} Activar cámara`;
     };
 
     const procesarMarcado = async (modo, pinIngresado, tokenQr = '') => {
@@ -1522,7 +1579,7 @@
         camActiva = true;
         videoEl.style.display = 'block';
         if (placeholderEl) placeholderEl.style.display = 'none';
-        if (btnCamara) btnCamara.textContent = '⏹ Detener cámara';
+        if (btnCamara) btnCamara.innerHTML = `${svgIcon('stop', 'sm')} Detener cámara`;
         if ($('#msg')) $('#msg').hidden = true;
         escanearFrameQr();
       } catch (err) {
@@ -1712,6 +1769,13 @@
     if ($('#saludo-estudiante')) $('#saludo-estudiante').textContent = info.saludo;
     if ($('#estado-general-pct')) $('#estado-general-pct').textContent = `${pctGlobal}%`;
     if ($('#estado-general-texto')) $('#estado-general-texto').textContent = `${pctGlobal}%`;
+    const gaugeArc = $('#gauge-prog-arc');
+    if (gaugeArc) {
+      const c = 226.19;
+      const ratio = Math.max(0, Math.min(1, Number(pctGlobal) / 100));
+      gaugeArc.style.strokeDasharray = String(c);
+      gaugeArc.style.strokeDashoffset = String(c * (1 - ratio));
+    }
   }
 
   if ($('#switch-estudiante-activo')) {
@@ -1731,43 +1795,38 @@
       const badgeColors = {
         isw1: 'background:var(--red-soft);color:var(--red)',
         bd2: 'background:var(--blue-bg);color:var(--blue)',
-        md: 'background:var(--warnbg);color:var(--warn)'
+        md: 'background:#FEF3C7;color:var(--warn)'
       };
 
-      $('#subjects').innerHTML = s.map((m, i) => {
+      $('#subjects').innerHTML = s.map((m) => {
         const f = calcFallas(m.aus, m.tot);
         const c = f.nivel === 'rojo' ? 'var(--bad)' : f.nivel === 'ambar' ? 'var(--warn-bright)' : 'var(--ok-bright)';
         const asistPct = (100 - f.pct).toFixed(1).replace(/\.0$/, '');
 
         return `
-          <div class="card subj" style="display:flex;flex-direction:column;justify-content:space-between">
+          <a class="card subj subj-link" href="historial.html?asig=${m.id}">
             <div>
               <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
-                <div style="display:flex;align-items:center;gap:10px">
-                  <span class="avatar" style="${badgeColors[m.id] || ''}">${m.codigoCorto || 'UAO'}</span>
+                <div style="display:flex;align-items:center;gap:11px">
+                  <span class="avatar" style="${badgeColors[m.id] || ''};width:38px;height:38px;font-size:11px">${m.codigoCorto || 'UAO'}</span>
                   <div>
-                    <b style="font-size:14px;display:block">${m.n}</b>
-                    <small class="muted" style="font-size:11px">${m.docente || 'Docente UAO'}</small>
+                    <b style="font-size:14px;display:block;color:var(--text)">${m.n}</b>
+                    <small class="muted" style="font-size:12px">${m.docente || 'Docente UAO'}</small>
                   </div>
                 </div>
-                <a href="historial.html?asig=${m.id}" class="muted" title="Ver historial de ${m.n}">›</a>
+                <span class="muted" style="padding-top:4px">${svgIcon('chevron-right', 'sm')}</span>
               </div>
 
-              <div style="display:flex;align-items:center;gap:10px;margin-top:12px">
+              <div style="display:flex;align-items:center;gap:10px;margin-top:16px">
                 <div class="bar" style="flex:1;margin:0"><i style="width:${asistPct}%;background:${c}"></i></div>
-                <b style="font-size:12px;color:${c}">${asistPct}%</b>
+                <b style="font-size:12px;color:${c};font-variant-numeric:tabular-nums">${asistPct}%</b>
               </div>
-
-              <small class="muted" style="display:block;margin-top:8px;font-size:12px">
-                ${m.aus} inasistencia(s) · ${m.tot} sesiones (${m.just || 0} justificada(s)) · ${f.pct}% fallas
-              </small>
             </div>
 
-            <div style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap">
-              <a class="btn neutral sm link" href="historial.html?asig=${m.id}" style="flex:1">Ver detalle</a>
-              <button class="btn sec dem sm" type="button" data-i="${i}" style="flex:1">+ Simular falla</button>
-            </div>
-          </div>
+            <small class="muted" style="display:block;margin-top:12px;font-size:12px">
+              ${m.aus} ${m.aus === 1 ? 'inasistencia' : 'inasistencias'} · ${m.tot} sesiones${m.just ? ` · ${m.just} justificada(s)` : ''}
+            </small>
+          </a>
         `;
       }).join('');
 
@@ -1776,26 +1835,36 @@
       if (alertaEl && peor) {
         if (peor.f.nivel === 'rojo') {
           alertaEl.innerHTML = `
-            <div class="banner bad">
-              ✕ <b>Riesgo crítico de pérdida en ${peor.m.n}</b><br>
-              Tienes <b>${peor.f.pct}%</b> de inasistencias (${peor.m.aus} de ${peor.m.tot} sesiones). Has superado el límite máximo permitido del 20% (${peor.f.maxPermitidas} fallas). Conforme al Reglamento Estudiantil UAO, conlleva reprobación con nota 1,5.
-              <div style="margin-top:6px"><a href="historial.html?asig=${peor.m.id}" style="font-weight:700;text-decoration:underline">Ver detalle ›</a></div>
+            <div class="alert-card bad">
+              <span class="alert-icon">${svgIcon('alert')}</span>
+              <div>
+                <b style="display:block;font-size:14px;margin-bottom:2px">Riesgo crítico en ${peor.m.n}</b>
+                <span class="muted" style="color:#7F1D1D">Tienes <b>${peor.f.pct}%</b> de inasistencias (${peor.m.aus} de ${peor.m.tot} sesiones). Superaste el límite del 20% (${peor.f.maxPermitidas} fallas).</span>
+                <div style="margin-top:6px"><a href="historial.html?asig=${peor.m.id}" style="font-weight:700;color:var(--bad);display:inline-flex;align-items:center;gap:3px">Ver detalle ${svgIcon('chevron-right', 'sm')}</a></div>
+              </div>
             </div>`;
         } else if (peor.f.nivel === 'ambar') {
           const msgLimite = peor.f.faltasRestantesPermitidas === 0
-            ? `Has alcanzado el tope máximo permitido (${peor.f.maxPermitidas} fallas ≤ 20%): estás a <b>${peor.f.faltasParaSuperar20} inasistencia(s)</b> de superar el límite de pérdida del 20% (la próxima falla supera el 20%).`
-            : `Te queda(n) <b>${peor.f.faltasRestantesPermitidas} inasistencia(s)</b> dentro del límite permitido y estás a <b>${peor.f.faltasParaSuperar20} inasistencia(s)</b> de superar el 20%.`;
+            ? `Estás a <b>${peor.f.faltasParaSuperar20} inasistencia</b> de superar el límite de pérdida del 20%.`
+            : `Te quedan <b>${peor.f.faltasRestantesPermitidas} inasistencia(s)</b> dentro del límite permitido (20%).`;
 
           alertaEl.innerHTML = `
-            <div class="banner">
-              ⚠️ <b>Atención a ${peor.m.n}</b><br>
-              Tienes <b>${peor.f.pct}%</b> de inasistencias (${peor.m.aus} de ${peor.m.tot} sesiones). El límite de pérdida es 20%. ${msgLimite}
-              <div style="margin-top:6px"><a href="historial.html?asig=${peor.m.id}" style="font-weight:700;color:var(--warn)">Ver detalle ›</a></div>
+            <div class="alert-card">
+              <span class="alert-icon">${svgIcon('alert')}</span>
+              <div>
+                <b style="display:block;font-size:14px;margin-bottom:2px">Atención a ${peor.m.n}</b>
+                <span class="muted" style="color:#78350F">Tienes <b>${peor.f.pct}%</b> de inasistencias (${peor.m.aus} de ${peor.m.tot} sesiones). El límite de pérdida es 20%. ${msgLimite}</span>
+                <div style="margin-top:6px"><a href="historial.html?asig=${peor.m.id}" style="font-weight:700;color:var(--warn);display:inline-flex;align-items:center;gap:3px">Ver detalle ${svgIcon('chevron-right', 'sm')}</a></div>
+              </div>
             </div>`;
         } else {
           alertaEl.innerHTML = `
-            <div class="banner ok">
-              ✓ <b>Estado académico al día.</b> Todas tus asignaturas se encuentran por debajo del umbral preventivo del 15% de inasistencias.
+            <div class="alert-card ok">
+              <span class="alert-icon">${svgIcon('check-circle')}</span>
+              <div>
+                <b style="display:block;font-size:14px;margin-bottom:2px">Estado académico al día</b>
+                <span class="muted" style="color:#14532D">Todas tus asignaturas se encuentran por debajo del umbral preventivo del 15% de inasistencias.</span>
+              </div>
             </div>`;
         }
       }

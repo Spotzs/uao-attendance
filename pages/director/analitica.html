@@ -20,22 +20,22 @@
 
       <div class="side-section-label">MENÚ PRINCIPAL</div>
       <div class="side-nav">
-        <a href="resumen.html"><span class="nav-left">⊞ Resumen</span></a>
-        <a href="analitica.html" class="on"><span class="nav-left">📈 Analítica</span></a>
-        <a href="estudiantes-riesgo.html"><span class="nav-left">👥 Estudiantes</span></a>
-        <a href="reportes.html"><span class="nav-left">📄 Reportes</span></a>
+        <a href="resumen.html"><span class="nav-left"><i class="ic" data-ic="grid"></i> Resumen</span></a>
+        <a href="analitica.html" class="on"><span class="nav-left"><i class="ic" data-ic="trend"></i> Analítica</span></a>
+        <a href="estudiantes-riesgo.html"><span class="nav-left"><i class="ic" data-ic="users"></i> Estudiantes</span></a>
+        <a href="reportes.html"><span class="nav-left"><i class="ic" data-ic="file"></i> Reportes</span></a>
       </div>
     </div>
 
     <div class="side-bottom">
       <div class="period-box">
-        <span>📅</span>
+        <i class="ic" data-ic="calendar"></i>
         <div>
           <small>Periodo actual</small>
           <b>2026-1</b>
         </div>
       </div>
-      <a class="out" href="../../index.html"><span class="nav-left">↪ Cerrar sesión</span></a>
+      <a class="out" href="../../index.html"><span class="nav-left"><i class="ic" data-ic="logout"></i> Cerrar sesión</span></a>
     </div>
   </nav>
 
@@ -49,13 +49,14 @@
           <option value="director" selected>Director</option>
         </select>
       </div>
-      <button class="bell-btn" type="button" title="Notificaciones">🔔</button>
+      <button class="bell-btn" type="button" title="Notificaciones"><i class="ic" data-ic="bell"></i></button>
       <div class="user-pill">
         <span class="avatar">CR</span>
         <div class="user-pill-info">
           <b>Carlos Ramírez</b>
           <small>Director de programa</small>
         </div>
+        <i class="ic sm pill-caret" data-ic="chevron-right"></i>
       </div>
     </header>
 
@@ -68,37 +69,37 @@
         </div>
         <div class="actions">
           <a class="btn neutral sm link" href="estudiantes-riesgo.html">Ver estudiantes en riesgo</a>
-          <a class="btn sm link" href="reportes.html">Ir a reportes ›</a>
+          <a class="btn sm link" href="reportes.html">Ir a reportes <i class="ic sm" data-ic="chevron-right"></i></a>
         </div>
       </div>
 
-      <div class="card" style="margin-bottom:16px;padding:14px 18px">
+      <div class="card" style="margin-bottom:18px;padding:16px 20px">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap">
           <div style="display:flex;gap:12px;flex-wrap:wrap;flex:1">
             <div style="min-width:180px;flex:1">
-              <label class="muted" for="analitica-facultad" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em">FACULTAD</label>
-              <select class="input" id="analitica-facultad" style="margin:4px 0 0">
+              <label class="muted" for="analitica-facultad" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em">FACULTAD</label>
+              <select class="input" id="analitica-facultad" style="margin:5px 0 0">
                 <option value="todas" selected>Todas las facultades</option>
                 <option value="Ingeniería">Facultad de Ingeniería</option>
               </select>
             </div>
             <div style="min-width:160px;flex:1">
-              <label class="muted" for="analitica-periodo" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em">PERIODO</label>
-              <select class="input" id="analitica-periodo" style="margin:4px 0 0">
+              <label class="muted" for="analitica-periodo" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em">PERIODO</label>
+              <select class="input" id="analitica-periodo" style="margin:5px 0 0">
                 <option value="2026-1" selected>2026-1</option>
                 <option value="2026-3">2026-3 (Actual)</option>
                 <option value="2025-3">2025-3</option>
               </select>
             </div>
           </div>
-          <small style="color:var(--ok);font-weight:600;font-size:12px;white-space:nowrap">● Indicadores calculados en vivo</small>
+          <small style="color:var(--ok-bright);font-weight:600;font-size:12px;white-space:nowrap">● Indicadores calculados en vivo</small>
         </div>
         <div class="banner" id="msg-analitica" role="alert" hidden></div>
       </div>
 
       <div class="kpis">
         <div class="card kpi-card">
-          <span class="kpi-icon" style="background:var(--ok-bg);color:var(--ok)">✓</span>
+          <span class="kpi-icon" style="background:var(--ok-bg);color:var(--ok)"><i class="ic lg" data-ic="check-circle"></i></span>
           <div>
             <small class="muted">Asistencia promedio</small>
             <b id="an-kpi-asistencia">91,1%</b>
@@ -106,7 +107,7 @@
           </div>
         </div>
         <div class="card kpi-card">
-          <span class="kpi-icon" style="background:var(--warnbg);color:var(--warn)">📉</span>
+          <span class="kpi-icon" style="background:#FEF3C7;color:var(--warn)"><i class="ic lg" data-ic="trend"></i></span>
           <div>
             <small class="muted">Ausentismo promedio</small>
             <b id="an-kpi-ausentismo">8,9%</b>
@@ -114,7 +115,7 @@
           </div>
         </div>
         <div class="card kpi-card">
-          <span class="kpi-icon" style="background:var(--red-soft);color:var(--red)">⚠️</span>
+          <span class="kpi-icon" style="background:var(--red-soft);color:var(--red)"><i class="ic lg" data-ic="alert"></i></span>
           <div>
             <small class="muted">Casos en alerta (≥15%)</small>
             <b id="an-kpi-riesgo">0</b>
@@ -122,7 +123,7 @@
           </div>
         </div>
         <div class="card kpi-card">
-          <span class="kpi-icon" style="background:var(--blue-bg);color:var(--blue)">📚</span>
+          <span class="kpi-icon" style="background:var(--blue-bg);color:var(--blue)"><i class="ic lg" data-ic="book"></i></span>
           <div>
             <small class="muted">Asignaturas monitoreadas</small>
             <b id="an-kpi-cursos">3</b>
@@ -135,8 +136,8 @@
         <div class="card">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
             <div>
-              <span class="date-eyebrow" style="margin-bottom:2px">EVOLUCIÓN SEMANAL</span>
-              <b style="font-size:18px;display:block">Comportamiento por semana</b>
+              <span class="date-eyebrow" style="margin-bottom:3px">EVOLUCIÓN SEMANAL</span>
+              <b style="font-size:19px;display:block;letter-spacing:-0.015em">Comportamiento por semana</b>
               <small class="muted">Porcentaje de asistencia institucional S1 – S12</small>
             </div>
             <div style="text-align:right">
@@ -146,28 +147,37 @@
           </div>
 
           <div class="chart-wrap">
-            <div class="chart" id="chart-analitica-semanal">
-              <div class="chart-col"><i style="height:64%" title="S1: 64%"></i><small>S1</small></div>
-              <div class="chart-col"><i style="height:74%" title="S2: 74%"></i><small>S2</small></div>
-              <div class="chart-col"><i style="height:58%" title="S3: 58%"></i><small>S3</small></div>
-              <div class="chart-col"><i style="height:84%" title="S4: 84%"></i><small>S4</small></div>
-              <div class="chart-col"><i style="height:76%" title="S5: 76%"></i><small>S5</small></div>
-              <div class="chart-col"><i style="height:93%" title="S6: 93%"></i><small>S6</small></div>
-              <div class="chart-col"><i style="height:71%" title="S7: 71%"></i><small>S7</small></div>
-              <div class="chart-col"><i class="hl" style="height:81%" title="S8: 81%"></i><small>S8</small></div>
-              <div class="chart-col"><i style="height:67%" title="S9: 67%"></i><small>S9</small></div>
-              <div class="chart-col"><i style="height:60%" title="S10: 60%"></i><small>S10</small></div>
-              <div class="chart-col"><i style="height:77%" title="S11: 77%"></i><small>S11</small></div>
-              <div class="chart-col"><i style="height:68%" title="S12: 68%"></i><small>S12</small></div>
+            <div class="chart-grid">
+              <div class="chart-yaxis">
+                <span>100%</span>
+                <span>75%</span>
+                <span>50%</span>
+                <span>25%</span>
+                <span>0%</span>
+              </div>
+              <div class="chart" id="chart-analitica-semanal">
+                <div class="chart-col"><i style="height:64%" title="S1: 64%"></i><small>S1</small></div>
+                <div class="chart-col"><i style="height:74%" title="S2: 74%"></i><small>S2</small></div>
+                <div class="chart-col"><i style="height:58%" title="S3: 58%"></i><small>S3</small></div>
+                <div class="chart-col"><i style="height:84%" title="S4: 84%"></i><small>S4</small></div>
+                <div class="chart-col"><i style="height:76%" title="S5: 76%"></i><small>S5</small></div>
+                <div class="chart-col"><i style="height:93%" title="S6: 93%"></i><small>S6</small></div>
+                <div class="chart-col"><i style="height:71%" title="S7: 71%"></i><small>S7</small></div>
+                <div class="chart-col"><i class="hl" style="height:81%" title="S8: 81%"></i><small>S8</small></div>
+                <div class="chart-col"><i style="height:67%" title="S9: 67%"></i><small>S9</small></div>
+                <div class="chart-col"><i style="height:60%" title="S10: 60%"></i><small>S10</small></div>
+                <div class="chart-col"><i style="height:77%" title="S11: 77%"></i><small>S11</small></div>
+                <div class="chart-col"><i style="height:68%" title="S12: 68%"></i><small>S12</small></div>
+              </div>
             </div>
           </div>
         </div>
 
         <div class="card">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
             <div>
-              <span class="date-eyebrow" style="margin-bottom:2px">DISTRIBUCIÓN</span>
-              <b style="font-size:18px">Ausentismo por facultad</b>
+              <span class="date-eyebrow" style="margin-bottom:3px">DISTRIBUCIÓN</span>
+              <b style="font-size:19px;letter-spacing:-0.015em">Ausentismo por facultad</b>
             </div>
             <span class="badge b-ok">Periodo 2026-1</span>
           </div>
@@ -175,7 +185,7 @@
           <div class="row">
             <div style="flex:1">
               <b>Ingeniería</b>
-              <div class="bar" style="margin-top:6px"><i style="width:93.6%;background:var(--ok)"></i></div>
+              <div class="bar" style="margin-top:6px"><i style="width:93.6%;background:var(--ok-bright)"></i></div>
               <small class="muted">1.240 estudiantes · 93,6% asistencia</small>
             </div>
             <div style="text-align:right;min-width:74px"><b>6,4%</b><br><small style="color:var(--ok)">Óptimo</small></div>
@@ -183,7 +193,7 @@
           <div class="row">
             <div style="flex:1">
               <b>Ciencias Económicas</b>
-              <div class="bar" style="margin-top:6px"><i style="width:89.3%;background:var(--warn)"></i></div>
+              <div class="bar" style="margin-top:6px"><i style="width:89.3%;background:var(--warn-bright)"></i></div>
               <small class="muted">980 estudiantes · 89,3% asistencia</small>
             </div>
             <div style="text-align:right;min-width:74px"><b>10,7%</b><br><small style="color:var(--warn)">Atención</small></div>
@@ -191,7 +201,7 @@
           <div class="row">
             <div style="flex:1">
               <b>Humanidades</b>
-              <div class="bar" style="margin-top:6px"><i style="width:92.8%;background:var(--ok)"></i></div>
+              <div class="bar" style="margin-top:6px"><i style="width:92.8%;background:var(--ok-bright)"></i></div>
               <small class="muted">740 estudiantes · 92,8% asistencia</small>
             </div>
             <div style="text-align:right;min-width:74px"><b>7,2%</b><br><small style="color:var(--ok)">Estable</small></div>
@@ -199,7 +209,7 @@
           <div class="row">
             <div style="flex:1">
               <b>Comunicación</b>
-              <div class="bar" style="margin-top:6px"><i style="width:90.9%;background:var(--ok)"></i></div>
+              <div class="bar" style="margin-top:6px"><i style="width:90.9%;background:var(--ok-bright)"></i></div>
               <small class="muted">646 estudiantes · 90,9% asistencia</small>
             </div>
             <div style="text-align:right;min-width:74px"><b>9,1%</b><br><small style="color:var(--muted)">Normal</small></div>
@@ -207,14 +217,14 @@
         </div>
       </div>
 
-      <div class="card" style="margin-top:16px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <div class="card" style="margin-top:18px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
           <div>
-            <span class="date-eyebrow" style="margin-bottom:2px">DETALLE POR CURSO</span>
-            <b style="font-size:18px;display:block">Comparativa por asignatura</b>
+            <span class="date-eyebrow" style="margin-bottom:3px">DETALLE POR CURSO</span>
+            <b style="font-size:19px;display:block;letter-spacing:-0.015em">Comparativa por asignatura</b>
             <small class="muted">Asistencia promedio, ausentismo acumulado y estudiantes en alerta por asignatura.</small>
           </div>
-          <a href="reportes.html" style="color:var(--red);font-weight:700;font-size:13px">Exportar consolidado ›</a>
+          <a href="reportes.html" class="link-red" style="min-height:auto;padding:0">Exportar consolidado <i class="ic sm" data-ic="chevron-right"></i></a>
         </div>
 
         <div class="scroll">

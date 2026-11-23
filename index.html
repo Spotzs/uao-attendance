@@ -26,8 +26,8 @@
     </div>
 
     <div class="login-features">
-      <span>🛡️ Acceso institucional seguro</span>
-      <span>🕒 Registro en segundos</span>
+      <span><i class="ic sm" data-ic="shield"></i> Acceso institucional seguro</span>
+      <span><i class="ic sm" data-ic="clock"></i> Registro en segundos</span>
     </div>
   </div>
 
@@ -35,13 +35,19 @@
     <div class="login-form-box">
       <span class="eyebrow-red" style="color:var(--red);margin-bottom:4px">INGRESO ÚNICO UAO</span>
       <h2>Bienvenido de nuevo</h2>
-      <p class="muted" style="margin:0 0 22px">Usa tus credenciales institucionales para continuar.</p>
+      <p class="muted" style="margin:0 0 24px">Usa tus credenciales institucionales para continuar.</p>
 
       <label class="muted" for="user" style="font-weight:600;color:var(--text);font-size:12px">Usuario institucional</label>
-      <input class="input" id="user" placeholder="sandra.guanarita@uao.edu.co" autocomplete="username">
+      <div class="input-icon-wrap">
+        <i class="ic sm" data-ic="user"></i>
+        <input class="input" id="user" placeholder="sandra.guanarita@uao.edu.co" autocomplete="username">
+      </div>
 
       <label class="muted" for="pass" style="font-weight:600;color:var(--text);font-size:12px">Contraseña</label>
-      <input class="input" id="pass" type="password" placeholder="••••••••••" autocomplete="current-password">
+      <div class="input-icon-wrap">
+        <i class="ic sm" data-ic="lock"></i>
+        <input class="input" id="pass" type="password" placeholder="••••••••••" autocomplete="current-password">
+      </div>
 
       <div style="font-weight:600;color:var(--text);font-size:12px;margin-bottom:6px">Ingresar como</div>
       <div class="tabs" id="roles">
@@ -50,35 +56,38 @@
         <span data-user="carlos.ramirez">Director</span>
       </div>
 
-      <button class="btn" id="login" style="margin-top:8px">Ingresar al portal &nbsp;›</button>
+      <button class="btn" id="login" style="margin-top:8px">Ingresar al portal <i class="ic sm" data-ic="chevron-right"></i></button>
       <div class="banner bad" id="lmsg" role="alert" hidden></div>
 
-      <p class="muted" style="text-align:center;font-size:12px;margin:18px 0 8px">
+      <p class="muted" style="text-align:center;font-size:12px;margin:18px 0 0">
         ¿Problemas para ingresar? <a href="#" id="link-soporte-uao" style="color:var(--red);font-weight:700">Contactar soporte UAO</a>
       </p>
+
+      <div class="login-divider"></div>
+
       <p class="muted" style="text-align:center;font-size:11px;opacity:0.75;margin:0">
         Protegido por el sistema de autenticación institucional UAO.
       </p>
 
-      <div style="margin-top:18px;text-align:center">
-        <button class="btn neutral sm" id="toggle-reg-usuario" type="button" style="width:auto;min-height:36px;font-size:12px">Registrar nueva cuenta institucional</button>
+      <div style="margin-top:16px;text-align:center">
+        <button class="btn neutral sm" id="toggle-reg-usuario" type="button" style="width:auto;min-height:38px;font-size:12px">Registrar nueva cuenta institucional</button>
       </div>
 
-      <div id="box-reg-usuario" hidden style="margin-top:12px;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--bg)">
-        <b style="display:block;margin-bottom:8px;font-size:13px">Crear usuario institucional</b>
+      <div id="box-reg-usuario" hidden style="margin-top:12px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--bg)">
+        <b style="display:block;margin-bottom:10px;font-size:13px">Crear usuario institucional</b>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <input class="input" id="reg-nombre" placeholder="Nombre completo" style="margin:0;min-height:38px">
-          <input class="input" id="reg-codigo" placeholder="Código (ej. 2249001)" style="margin:0;min-height:38px">
-          <input class="input" id="reg-user" placeholder="Usuario (ej. laura.gomez)" style="margin:0;min-height:38px">
-          <input class="input" id="reg-pass" type="password" placeholder="Contraseña" style="margin:0;min-height:38px">
+          <input class="input" id="reg-nombre" placeholder="Nombre completo" style="margin:0;min-height:40px">
+          <input class="input" id="reg-codigo" placeholder="Código (ej. 2249001)" style="margin:0;min-height:40px">
+          <input class="input" id="reg-user" placeholder="Usuario (ej. laura.gomez)" style="margin:0;min-height:40px">
+          <input class="input" id="reg-pass" type="password" placeholder="Contraseña" style="margin:0;min-height:40px">
         </div>
-        <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
-          <select class="input" id="reg-rol" style="margin:0;min-height:38px;max-width:150px">
+        <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+          <select class="input" id="reg-rol" style="margin:0;min-height:40px;max-width:150px">
             <option value="estudiante" selected>Estudiante</option>
             <option value="docente">Docente</option>
             <option value="director">Director</option>
           </select>
-          <button class="btn sm" id="btn-crear-usuario" type="button" style="width:auto;min-height:38px">Crear cuenta</button>
+          <button class="btn sm" id="btn-crear-usuario" type="button" style="width:auto;min-height:40px">Crear cuenta</button>
         </div>
         <div class="banner" id="reg-msg" hidden style="margin-top:8px"></div>
       </div>
