@@ -20,22 +20,22 @@
 
       <div class="side-section-label">MENÚ PRINCIPAL</div>
       <div class="side-nav">
-        <a href="inicio.html"><span class="nav-left">⊞ Inicio</span></a>
-        <a href="registro-manual.html"><span class="nav-left">📷 Lista manual</span></a>
-        <a href="bitacora.html"><span class="nav-left">🕒 Historial / Bitácora</span></a>
-        <a href="excusas.html" class="on"><span class="nav-left">📄 Excusas</span><span class="nav-count" id="nav-exc-count">3</span></a>
+        <a href="inicio.html"><span class="nav-left"><i class="ic" data-ic="grid"></i> Inicio</span></a>
+        <a href="registro-manual.html"><span class="nav-left"><i class="ic" data-ic="camera"></i> Lista manual</span></a>
+        <a href="bitacora.html"><span class="nav-left"><i class="ic" data-ic="clock"></i> Historial</span></a>
+        <a href="excusas.html" class="on"><span class="nav-left"><i class="ic" data-ic="file"></i> Excusas</span><span class="nav-count" id="nav-exc-count">3</span></a>
       </div>
     </div>
 
     <div class="side-bottom">
       <div class="period-box">
-        <span>📅</span>
+        <i class="ic" data-ic="calendar"></i>
         <div>
           <small>Periodo actual</small>
           <b>2026-1</b>
         </div>
       </div>
-      <a class="out" href="../../index.html"><span class="nav-left">↪ Cerrar sesión</span></a>
+      <a class="out" href="../../index.html"><span class="nav-left"><i class="ic" data-ic="logout"></i> Cerrar sesión</span></a>
     </div>
   </nav>
 
@@ -49,13 +49,14 @@
           <option value="director">Director</option>
         </select>
       </div>
-      <button class="bell-btn" type="button" title="Notificaciones">🔔</button>
+      <button class="bell-btn" type="button" title="Notificaciones"><i class="ic" data-ic="bell"></i></button>
       <div class="user-pill">
         <span class="avatar">SG</span>
         <div class="user-pill-info">
           <b>Sandra Guañarita</b>
           <small>Docente</small>
         </div>
+        <i class="ic sm pill-caret" data-ic="chevron-right"></i>
       </div>
     </header>
 
@@ -76,9 +77,9 @@
 
       <div class="session-bar">
         <div class="session-bar-left">
-          <div class="session-icon-box">🖥️</div>
+          <div class="session-icon-box"><i class="ic lg" data-ic="monitor"></i></div>
           <div>
-            <small style="font-size:10px;color:#94A3B8;text-transform:uppercase;letter-spacing:0.06em;font-weight:700">SESIÓN ACTUAL</small>
+            <small style="font-size:10px;color:#94A3B8;text-transform:uppercase;letter-spacing:0.07em;font-weight:700">SESIÓN ACTUAL</small>
             <div class="session-bar-title">
               <b>Ingeniería de Software I</b>
               <span class="live-pill" id="badge-estado-sesion">● EN VIVO</span>
@@ -114,16 +115,16 @@
 
 <div class="modal-backdrop" id="modal-soporte" hidden>
   <div class="modal-card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <div>
-        <span class="date-eyebrow">ALMACENAMIENTO DE SOPORTES · GOOGLE CLOUD STORAGE</span>
+        <span class="date-eyebrow">ALMACENAMIENTO DE SOPORTES</span>
         <b style="font-size:16px" id="modal-soporte-titulo">Vista previa de soporte</b>
       </div>
-      <button type="button" class="btn neutral sm" id="cerrar-modal-soporte" style="width:auto">✕</button>
+      <button type="button" class="btn neutral sm" id="cerrar-modal-soporte" style="width:auto;padding:0 12px" aria-label="Cerrar"><i class="ic sm" data-ic="close"></i></button>
     </div>
-    <div id="modal-soporte-body" style="background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:16px;font-size:13px"></div>
-    <div class="actions" style="margin-top:14px">
-      <a class="btn sec sm link" id="modal-soporte-descargar" href="#" target="_blank" style="width:auto">Descargar original</a>
+    <div id="modal-soporte-body" style="background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:16px;font-size:13px"></div>
+    <div class="actions" style="margin-top:16px">
+      <a class="btn sec sm link" id="modal-soporte-descargar" href="#" target="_blank" style="width:auto"><i class="ic sm" data-ic="download"></i> Descargar original</a>
       <button type="button" class="btn sm" id="ok-modal-soporte" style="width:auto">Cerrar vista previa</button>
     </div>
   </div>

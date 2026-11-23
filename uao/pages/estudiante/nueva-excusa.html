@@ -20,21 +20,21 @@
 
       <div class="side-section-label">MENÚ PRINCIPAL</div>
       <div class="side-nav">
-        <a href="inicio.html"><span class="nav-left">⊞ Inicio</span></a>
-        <a href="historial.html"><span class="nav-left">🕒 Historial</span></a>
-        <a href="nueva-excusa.html" class="on"><span class="nav-left">📄 Excusas</span></a>
+        <a href="inicio.html"><span class="nav-left"><i class="ic" data-ic="grid"></i> Inicio</span></a>
+        <a href="historial.html"><span class="nav-left"><i class="ic" data-ic="clock"></i> Historial</span></a>
+        <a href="nueva-excusa.html" class="on"><span class="nav-left"><i class="ic" data-ic="file"></i> Excusas</span></a>
       </div>
     </div>
 
     <div class="side-bottom">
       <div class="period-box">
-        <span>📅</span>
+        <i class="ic" data-ic="calendar"></i>
         <div>
           <small>Periodo actual</small>
           <b>2026-1</b>
         </div>
       </div>
-      <a class="out" href="../../index.html"><span class="nav-left">↪ Cerrar sesión</span></a>
+      <a class="out" href="../../index.html"><span class="nav-left"><i class="ic" data-ic="logout"></i> Cerrar sesión</span></a>
     </div>
   </nav>
 
@@ -57,13 +57,14 @@
           <option value="director">Director</option>
         </select>
       </div>
-      <button class="bell-btn" type="button" title="Alertas">🔔</button>
+      <button class="bell-btn" type="button" title="Alertas"><i class="ic" data-ic="bell"></i></button>
       <div class="user-pill">
         <span class="avatar" id="est-avatar-top">JM</span>
         <div class="user-pill-info">
           <b id="est-nombre-top">Juan Sebastián Marín</b>
           <small id="est-cod-top">Estudiante · 2248332</small>
         </div>
+        <i class="ic sm pill-caret" data-ic="chevron-right"></i>
       </div>
     </header>
 
@@ -73,19 +74,23 @@
           <span class="date-eyebrow" style="color:#F87171">MARTES, 12 DE MAYO</span>
           <h1 id="saludo-estudiante">Hola, Juan Sebastián</h1>
           <p style="margin:0;font-size:14px;color:#CBD5E1">
-            Sigue así. Tu asistencia general este semestre es del <b id="estado-general-texto">89.3%</b>.
+            Sigue así. Tu asistencia general este semestre es del <b id="estado-general-texto" style="color:#fff">89.3%</b>.
           </p>
         </div>
         <div class="gauge-circle">
+          <svg class="gauge-svg" viewBox="0 0 84 84" aria-hidden="true">
+            <circle class="gauge-track" cx="42" cy="42" r="36"></circle>
+            <circle class="gauge-prog" id="gauge-prog-arc" cx="42" cy="42" r="36" stroke-dasharray="226.19" stroke-dashoffset="24"></circle>
+          </svg>
           <b id="estado-general-pct">89.3%</b>
           <small>Global</small>
         </div>
       </div>
 
       <div class="subnav-pills">
-        <a href="inicio.html">⊞ Inicio</a>
-        <a href="historial.html">🕒 Historial</a>
-        <a href="nueva-excusa.html" class="on">📄 Nueva excusa</a>
+        <a href="inicio.html"><i class="ic sm" data-ic="grid"></i> Inicio</a>
+        <a href="historial.html"><i class="ic sm" data-ic="clock"></i> Historial</a>
+        <a href="nueva-excusa.html" class="on"><i class="ic sm" data-ic="file"></i> Nueva excusa</a>
       </div>
 
       <div class="card" style="max-width:640px">
@@ -117,9 +122,9 @@
         </div>
 
         <div class="field">
-          <label for="archivo">Soporte digital (Google Cloud Storage · PDF, JPG o PNG ≤ 10 MB)</label>
+          <label for="archivo">Soporte digital (PDF, JPG o PNG ≤ 10 MB)</label>
           <input class="input" id="archivo" type="file" accept=".pdf,.jpg,.jpeg,.png" style="margin-bottom:4px">
-          <small class="muted" style="font-size:11px">El archivo se almacena en el contenedor Google Cloud Storage vinculado a tu registro.</small>
+          <small class="muted" style="font-size:11px">El archivo quedará almacenado de forma segura y vinculado a tu solicitud.</small>
         </div>
 
         <div class="banner bad" id="msg" role="alert" hidden></div>
@@ -133,15 +138,15 @@
   </div>
 </div>
 
-<a class="fab fx" href="marcar-asistencia.html">📷 Marcar asistencia</a>
+<a class="fab fx" href="marcar-asistencia.html"><i class="ic" data-ic="camera"></i> Marcar asistencia</a>
 
 <nav class="bottom">
   <div>
-    <a href="inicio.html">🏠<span>Inicio</span></a>
-    <a href="marcar-asistencia.html">📷<span>Marcar</span></a>
-    <a href="historial.html">🕒<span>Historial</span></a>
-    <a href="nueva-excusa.html" class="on">📄<span>Excusas</span></a>
-    <a href="../../index.html">↪<span>Salir</span></a>
+    <a href="inicio.html"><i class="ic" data-ic="home"></i><span>Inicio</span></a>
+    <a href="marcar-asistencia.html"><i class="ic" data-ic="camera"></i><span>Marcar</span></a>
+    <a href="historial.html"><i class="ic" data-ic="clock"></i><span>Historial</span></a>
+    <a href="nueva-excusa.html" class="on"><i class="ic" data-ic="file"></i><span>Excusas</span></a>
+    <a href="../../index.html"><i class="ic" data-ic="logout"></i><span>Salir</span></a>
   </div>
 </nav>
 

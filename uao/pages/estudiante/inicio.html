@@ -20,21 +20,21 @@
 
       <div class="side-section-label">MENÚ PRINCIPAL</div>
       <div class="side-nav">
-        <a href="inicio.html" class="on"><span class="nav-left">⊞ Inicio</span></a>
-        <a href="historial.html"><span class="nav-left">🕒 Historial</span></a>
-        <a href="nueva-excusa.html"><span class="nav-left">📄 Excusas</span></a>
+        <a href="inicio.html" class="on"><span class="nav-left"><i class="ic" data-ic="grid"></i> Inicio</span></a>
+        <a href="historial.html"><span class="nav-left"><i class="ic" data-ic="clock"></i> Historial</span></a>
+        <a href="nueva-excusa.html"><span class="nav-left"><i class="ic" data-ic="file"></i> Excusas</span></a>
       </div>
     </div>
 
     <div class="side-bottom">
       <div class="period-box">
-        <span>📅</span>
+        <i class="ic" data-ic="calendar"></i>
         <div>
           <small>Periodo actual</small>
           <b>2026-1</b>
         </div>
       </div>
-      <a class="out" href="../../index.html"><span class="nav-left">↪ Cerrar sesión</span></a>
+      <a class="out" href="../../index.html"><span class="nav-left"><i class="ic" data-ic="logout"></i> Cerrar sesión</span></a>
     </div>
   </nav>
 
@@ -57,13 +57,14 @@
           <option value="director">Director</option>
         </select>
       </div>
-      <button class="bell-btn" type="button" title="Alertas">🔔</button>
+      <button class="bell-btn" type="button" title="Alertas"><i class="ic" data-ic="bell"></i></button>
       <div class="user-pill">
         <span class="avatar" id="est-avatar-top">JM</span>
         <div class="user-pill-info">
           <b id="est-nombre-top">Juan Sebastián Marín</b>
           <small id="est-cod-top">Estudiante · 2248332</small>
         </div>
+        <i class="ic sm pill-caret" data-ic="chevron-right"></i>
       </div>
     </header>
 
@@ -73,38 +74,42 @@
           <span class="date-eyebrow" style="color:#F87171">MARTES, 12 DE MAYO</span>
           <h1 id="saludo-estudiante">Hola, Juan Sebastián</h1>
           <p style="margin:0;font-size:14px;color:#CBD5E1">
-            Sigue así. Tu asistencia general este semestre es del <b id="estado-general-texto">89.3%</b>.
+            Sigue así. Tu asistencia general este semestre es del <b id="estado-general-texto" style="color:#fff">89.3%</b>.
           </p>
         </div>
         <div class="gauge-circle" title="Asistencia general del semestre">
+          <svg class="gauge-svg" viewBox="0 0 84 84" aria-hidden="true">
+            <circle class="gauge-track" cx="42" cy="42" r="36"></circle>
+            <circle class="gauge-prog" id="gauge-prog-arc" cx="42" cy="42" r="36" stroke-dasharray="226.19" stroke-dashoffset="24"></circle>
+          </svg>
           <b id="estado-general-pct">89.3%</b>
           <small>Global</small>
         </div>
       </div>
 
       <div class="subnav-pills">
-        <a href="inicio.html" class="on">⊞ Inicio</a>
-        <a href="historial.html">🕒 Historial</a>
-        <a href="nueva-excusa.html">📄 Nueva excusa</a>
+        <a href="inicio.html" class="on"><i class="ic sm" data-ic="grid"></i> Inicio</a>
+        <a href="historial.html"><i class="ic sm" data-ic="clock"></i> Historial</a>
+        <a href="nueva-excusa.html"><i class="ic sm" data-ic="file"></i> Nueva excusa</a>
       </div>
 
       <div id="alerta"></div>
 
-      <div style="display:flex;justify-content:space-between;align-items:center;margin:20px 0 10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin:22px 0 12px">
         <div>
-          <b style="font-size:18px;display:block">Mis asignaturas</b>
+          <b style="font-size:19px;display:block;letter-spacing:-0.015em">Mis asignaturas</b>
           <small class="muted">Periodo académico 2026-1</small>
         </div>
-        <span class="badge" style="background:#E2E8F0;color:var(--text)">3 cursos</span>
+        <span class="badge" style="background:#EEF2F6;color:var(--text-soft)">3 cursos</span>
       </div>
 
       <div class="three-cols" id="subjects"></div>
 
-      <div class="card" style="margin-top:16px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap">
-        <div style="display:flex;align-items:center;gap:14px">
-          <div style="background:var(--red-soft);color:var(--red);border-radius:10px;padding:8px 12px;text-align:center;font-weight:800;line-height:1.1">
-            <span style="font-size:16px;display:block">14</span>
-            <small style="font-size:10px">MAY</small>
+      <div class="card" style="margin-top:18px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:18px 22px">
+        <div style="display:flex;align-items:center;gap:16px">
+          <div style="background:var(--red-soft);color:var(--red);border-radius:12px;width:52px;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;line-height:1.05;flex-shrink:0">
+            <span style="font-size:17px">14</span>
+            <small style="font-size:10px;letter-spacing:0.05em">MAY</small>
           </div>
           <div>
             <span class="date-eyebrow" style="margin-bottom:2px">PRÓXIMA CLASE · 8:00 A. M.</span>
@@ -118,15 +123,15 @@
   </div>
 </div>
 
-<a class="fab fx" href="marcar-asistencia.html">📷 Marcar asistencia</a>
+<a class="fab fx" href="marcar-asistencia.html"><i class="ic" data-ic="camera"></i> Marcar asistencia</a>
 
 <nav class="bottom">
   <div>
-    <a href="inicio.html" class="on">🏠<span>Inicio</span></a>
-    <a href="marcar-asistencia.html">📷<span>Marcar</span></a>
-    <a href="historial.html">🕒<span>Historial</span></a>
-    <a href="nueva-excusa.html">📄<span>Excusas</span></a>
-    <a href="../../index.html">↪<span>Salir</span></a>
+    <a href="inicio.html" class="on"><i class="ic" data-ic="home"></i><span>Inicio</span></a>
+    <a href="marcar-asistencia.html"><i class="ic" data-ic="camera"></i><span>Marcar</span></a>
+    <a href="historial.html"><i class="ic" data-ic="clock"></i><span>Historial</span></a>
+    <a href="nueva-excusa.html"><i class="ic" data-ic="file"></i><span>Excusas</span></a>
+    <a href="../../index.html"><i class="ic" data-ic="logout"></i><span>Salir</span></a>
   </div>
 </nav>
 
