@@ -497,7 +497,35 @@ function sincronizarSesionConHistorial(estudianteCodigo, asignaturaId, estadoSes
   }
 }
 
-function marcarAsistenciaEstudiante({ sesionId = 'SES-ISW1-G01-ACTUAL', estudianteCodigo = '2248332', pinIngresado, modo = 'PIN', autor }) {
+function extraerTokenQr(raw) {
+  const txt = String(raw || '').trim();
+  if (!txt) return { token: '', pin: '' };
+  try {
+    if (/^https?:\/\//i.test(txt)) {
+      const u = new URL(txt);
+      return {
+        token: String(u.searchParams.get('qr') || '').trim().toUpperCase(),
+        pin: String(u.searchParams.get('pin') || '').trim()
+      };
+    }
+  } catch (_) {}
+  try {
+    if (txt.startsWith('{')) {
+      const parsed = JSON.parse(txt);
+      return {
+        token: String(parsed.qr || parsed.token || '').trim().toUpperCase(),
+        pin: String(parsed.pin || '').trim()
+      };
+    }
+  } catch (_) {}
+  const match = txt.match(/UAO-[A-Z0-9]+/i);
+  return {
+    token: match ? match[0].toUpperCase() : txt.toUpperCase(),
+    pin: ''
+  };
+}
+
+function marcarAsistenciaEstudiante({ sesionId = 'SES-ISW1-G01-ACTUAL', estudianteCodigo = '2248332', pinIngresado, tokenQr, modo = 'PIN', autor }) {
   const ses = getSesionActual(sesionId);
   if (!ses) {
     return { ok: false, msg: 'No hay una sesión activa. Solicite al docente iniciar la asistencia.' };
@@ -515,7 +543,22 @@ function marcarAsistenciaEstudiante({ sesionId = 'SES-ISW1-G01-ACTUAL', estudian
     return { ok: false, msg: valMat.msg };
   }
 
-  if (modo === 'PIN') {
+  if (modo === 'QR') {
+    const parsedQr = extraerTokenQr(tokenQr);
+    if (!parsedQr.token || !parsedQr.token.startsWith('UAO-')) {
+      return { ok: false, msg: 'Código QR inválido. Escanea el código proyectado por el docente.' };
+    }
+    if (!ses.pin.redCaida && Date.now() >= ses.pin.exp) {
+      return { ok: false, msg: 'Código QR vencido. Escanea el nuevo código proyectado.' };
+    }
+    if (parsedQr.token !== ses.pin.token) {
+      return { ok: false, msg: 'Código QR vencido o no corresponde a la sesión actual. Escanea nuevamente.' };
+    }
+    const pinQr = parsedQr.pin || String(pinIngresado || '').trim();
+    if (pinQr && pinQr !== ses.pin.code) {
+      return { ok: false, msg: 'Código QR vencido o inválido. Escanea el código vigente en pantalla.' };
+    }
+  } else {
     if (!/^\d{4}$/.test(String(pinIngresado || ''))) {
       return { ok: false, msg: 'Ingresa los 4 dígitos numéricos del PIN institucional.' };
     }

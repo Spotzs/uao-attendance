@@ -253,6 +253,18 @@ check(
   JSON.stringify({ nuevoEst, loginNuevoEst: loginNuevoEst.ok, marcaNuevoEst, enLista })
 );
 
+const sesQr = dbMod.getSesionActual();
+const qrInvalido = dbMod.marcarAsistenciaEstudiante({ estudianteCodigo: '2248332', tokenQr: 'TEXTO-FALSO', modo: 'QR' });
+const qrVencido = dbMod.marcarAsistenciaEstudiante({ estudianteCodigo: '2248332', tokenQr: 'UAO-EXPIRED99', modo: 'QR' });
+const qrUrlReal = `http://127.0.0.1:3000/pages/estudiante/marcar-asistencia.html?qr=${sesQr.pin.token}&pin=${sesQr.pin.code}`;
+const qrOk = dbMod.marcarAsistenciaEstudiante({ estudianteCodigo: '2248332', tokenQr: qrUrlReal, modo: 'QR' });
+const qrDoble = dbMod.marcarAsistenciaEstudiante({ estudianteCodigo: '2248332', tokenQr: qrUrlReal, modo: 'QR' });
+check(
+  'QR FUNCIONAL: Rechaza QR inválido, vencido y doble marcado; aprueba URL QR vigente como Escaneo QR móvil',
+  !qrInvalido.ok && !qrVencido.ok && qrOk.ok && qrOk.medio === 'Escaneo QR móvil' && !qrDoble.ok,
+  JSON.stringify({ qrInvalido, qrVencido, qrOk, qrDoble })
+);
+
 dbMod.initSchemaAndSeed(true);
 
 console.log('\n===================================================================');

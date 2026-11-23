@@ -422,12 +422,17 @@
     return Math.round(((totSes - totAus) / totSes) * 1000) / 10;
   }
 
+  let ultimoQrSvgServidor = '';
+  let ultimoQrUrlServidor = '';
+
   async function syncSesionDesdeServidor() {
     const data = await apiRequest('/api/sesion', 'GET');
     if (data && data.ok && data.sesion) {
       store.set('sesion_activa', data.sesion.sesionActiva);
       store.set('red_docente_caida', Boolean(data.sesion.pin.redCaida));
       store.set('pin', data.sesion.pin);
+      ultimoQrSvgServidor = data.sesion.qrSvg || '';
+      ultimoQrUrlServidor = data.sesion.qrUrl || '';
       if (Array.isArray(data.roster)) {
         setRoster(data.roster);
       }
@@ -632,6 +637,18 @@
   actualizarBadgesExcusasDocente();
 
   if ($('#login')) {
+    const urlParams = new URLSearchParams(location.search);
+    const qrPendiente = urlParams.get('qr') || '';
+    const pinPendiente = urlParams.get('pin') || '';
+    const rolParam = urlParams.get('rol') || '';
+
+    if (!qrPendiente) {
+      try {
+        localStorage.removeItem('uao_usuario_actual');
+        localStorage.removeItem('uao_rol_actual');
+      } catch (e) {}
+    }
+
     let rol = 'docente';
     const rutas = {
       docente: 'pages/docente/inicio.html',
@@ -644,17 +661,38 @@
       director: 'carlos.ramirez@uao.edu.co'
     };
 
+    const seleccionarRol = (nuevoRol) => {
+      const idx = ['docente', 'estudiante', 'director'].indexOf(nuevoRol);
+      if (idx < 0) return;
+      rol = nuevoRol;
+      $$('#roles span').forEach((x, i) => x.classList.toggle('on', i === idx));
+      if ($('#user')) $('#user').placeholder = defaultUsers[rol];
+    };
+
     $$('#roles span').forEach((s, i) => {
       s.addEventListener('click', () => {
-        rol = ['docente', 'estudiante', 'director'][i];
-        $$('#roles span').forEach(x => x.classList.remove('on'));
-        s.classList.add('on');
-        if ($('#user')) $('#user').placeholder = defaultUsers[rol];
-        if ($('#lmsg')) $('#lmsg').hidden = true;
+        seleccionarRol(['docente', 'estudiante', 'director'][i]);
+        if ($('#lmsg') && !qrPendiente) $('#lmsg').hidden = true;
       });
     });
 
-    $('#login').addEventListener('click', async () => {
+    if (qrPendiente || rolParam === 'estudiante') {
+      seleccionarRol('estudiante');
+      if (qrPendiente) {
+        msg($('#lmsg'), true, 'Escaneo QR detectado. Inicia sesión con tu cuenta de estudiante UAO para registrar tu asistencia.');
+      }
+    }
+
+    const destinoPostLogin = (rolAutenticado) => {
+      if (qrPendiente && rolAutenticado === 'estudiante') {
+        const q = new URLSearchParams({ qr: qrPendiente });
+        if (pinPendiente) q.set('pin', pinPendiente);
+        return `pages/estudiante/marcar-asistencia.html?${q.toString()}`;
+      }
+      return rutas[rolAutenticado] || rutas[rol];
+    };
+
+    const ejecutarLogin = async () => {
       const u = $('#user').value.trim();
       const p = $('#pass').value;
 
@@ -670,7 +708,7 @@
             setEstudianteActivoCodigo(res.user.codigo);
             store.set('estudiante_activo_nombre', res.user.nombre);
           }
-          location.href = rutas[res.user.rol] || rutas[rol];
+          location.href = destinoPostLogin(res.user.rol);
           return;
         }
       }
@@ -684,7 +722,16 @@
       if (validacion.cuenta.rol === 'estudiante') {
         setEstudianteActivoCodigo(validacion.cuenta.codigo);
       }
-      location.href = rutas[rol];
+      location.href = destinoPostLogin(rol);
+    };
+
+    $('#login').addEventListener('click', ejecutarLogin);
+    ['#user', '#pass'].forEach(sel => {
+      if ($(sel)) {
+        $(sel).addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') ejecutarLogin();
+        });
+      }
     });
 
     if ($('#sim-bad-login')) {
@@ -754,17 +801,46 @@
 
   if ($('#pin') && $('#count')) {
     let p = getPin();
-    let lastTokenRendered = '';
+    let lastQrStateRendered = '';
+    let refrescandoServidor = false;
     const qrContainer = $('#qr-container') || $('.qr-box');
+
+    const refrescarDesdeServidorM02 = async () => {
+      if (refrescandoServidor) return;
+      refrescandoServidor = true;
+      try {
+        await syncSesionDesdeServidor();
+        await syncExcusasDesdeServidor();
+        actualizarBadgesExcusasDocente();
+        pintarM02();
+      } finally {
+        refrescandoServidor = false;
+      }
+    };
 
     const pintarM02 = () => {
       const sesionActiva = store.get('sesion_activa', true);
       const redDocenteCaida = store.get('red_docente_caida', false);
-      p = getPin();
+      const pinGuardado = store.get('pin', null);
 
-      if (qrContainer && p.token !== lastTokenRendered) {
-        qrContainer.innerHTML = renderSvgQR(p.token);
-        lastTokenRendered = p.token;
+      if (isApiMode() && sesionActiva && !redDocenteCaida && pinGuardado && Date.now() >= pinGuardado.exp) {
+        refrescarDesdeServidorM02();
+      }
+
+      p = isApiMode() && pinGuardado ? pinGuardado : getPin();
+
+      const qrStateKey = `${sesionActiva ? '1' : '0'}:${p.token}:${ultimoQrSvgServidor ? 'real' : 'local'}`;
+      if (qrContainer && qrStateKey !== lastQrStateRendered) {
+        if (!sesionActiva) {
+          qrContainer.innerHTML = '<div style="text-align:center;color:var(--muted);padding:12px"><b style="display:block;font-size:13px;color:var(--text)">Sesión cerrada</b><small>QR deshabilitado</small></div>';
+          qrContainer.title = 'Sesión de asistencia cerrada';
+        } else if (ultimoQrSvgServidor) {
+          qrContainer.innerHTML = ultimoQrSvgServidor;
+          qrContainer.title = ultimoQrUrlServidor || 'Escanea para registrar asistencia';
+        } else {
+          qrContainer.innerHTML = renderSvgQR(p.token);
+        }
+        lastQrStateRendered = qrStateKey;
       }
 
       if (!sesionActiva) {
@@ -834,13 +910,6 @@
           </div>
         `).join('');
       }
-    };
-
-    const refrescarDesdeServidorM02 = async () => {
-      await syncSesionDesdeServidor();
-      await syncExcusasDesdeServidor();
-      actualizarBadgesExcusasDocente();
-      pintarM02();
     };
 
     refrescarDesdeServidorM02();
@@ -1288,20 +1357,200 @@
     const tabsModo = $$('#tabs-modo span');
     const secQr = $('#sec-qr');
     const secPin = $('#sec-pin');
+    const videoEl = $('#qr-video');
+    const canvasEl = $('#qr-canvas');
+    const placeholderEl = $('#qr-placeholder');
+    const statusCamEl = $('#qr-cam-status');
+    const btnCamara = $('#simqr');
+    const fileQrInput = $('#qr-file-input');
+
+    let camStream = null;
+    let camTimer = null;
+    let camActiva = false;
+    let procesandoQr = false;
+
+    const extraerDatosQr = (raw) => {
+      const txt = String(raw || '').trim();
+      if (!txt) return { token: '', pin: '' };
+      try {
+        if (/^https?:\/\//i.test(txt)) {
+          const u = new URL(txt);
+          return {
+            token: String(u.searchParams.get('qr') || '').trim().toUpperCase(),
+            pin: String(u.searchParams.get('pin') || '').trim()
+          };
+        }
+      } catch (_) {}
+      try {
+        if (txt.startsWith('{')) {
+          const parsed = JSON.parse(txt);
+          return {
+            token: String(parsed.qr || parsed.token || '').trim().toUpperCase(),
+            pin: String(parsed.pin || '').trim()
+          };
+        }
+      } catch (_) {}
+      const match = txt.match(/UAO-[A-Z0-9]+/i);
+      return {
+        token: match ? match[0].toUpperCase() : '',
+        pin: ''
+      };
+    };
+
+    const detenerCamaraQr = () => {
+      camActiva = false;
+      if (camTimer) {
+        clearTimeout(camTimer);
+        camTimer = null;
+      }
+      if (camStream) {
+        camStream.getTracks().forEach(t => {
+          try { t.stop(); } catch (_) {}
+        });
+        camStream = null;
+      }
+      if (videoEl) {
+        videoEl.srcObject = null;
+        videoEl.style.display = 'none';
+      }
+      if (placeholderEl) placeholderEl.style.display = 'flex';
+      if (btnCamara) btnCamara.textContent = '📷 Activar cámara';
+    };
+
+    const procesarMarcado = async (modo, pinIngresado, tokenQr = '') => {
+      const estCod = getEstudianteActivoCodigo();
+
+      if (isApiMode()) {
+        const res = await apiRequest('/api/asistencia/marcar', 'POST', {
+          estudianteCodigo: estCod,
+          pin: pinIngresado,
+          tokenQr,
+          modo: modo === 'QR' ? 'QR' : 'PIN'
+        });
+        if (res) {
+          msg($('#msg'), Boolean(res.ok), res.msg);
+          if (res.ok) {
+            await syncSesionDesdeServidor();
+            setTimeout(() => { location.href = 'inicio.html'; }, 1500);
+          }
+          return Boolean(res.ok);
+        }
+      }
+
+      if (modo === 'QR') {
+        const p = getPin();
+        const parsed = extraerDatosQr(tokenQr);
+        if (!parsed.token || parsed.token !== p.token) {
+          msg($('#msg'), false, 'Código QR vencido o inválido. Escanea nuevamente.');
+          return false;
+        }
+      } else {
+        const v = validarPin(pinIngresado);
+        if (!v.ok) {
+          msg($('#msg'), false, v.msg);
+          return false;
+        }
+      }
+      const resRegistro = marcarAsistenciaEstudiante(modo === 'QR' ? 'Escaneo QR móvil' : 'PIN de aula', estCod);
+      msg($('#msg'), resRegistro.ok, resRegistro.msg);
+      if (resRegistro.ok) setTimeout(() => { location.href = 'inicio.html'; }, 1500);
+      return Boolean(resRegistro.ok);
+    };
+
+    const manejarContenidoQr = async (textoCrudo) => {
+      if (procesandoQr) return;
+      procesandoQr = true;
+      detenerCamaraQr();
+
+      const datos = extraerDatosQr(textoCrudo);
+      if (!datos.token || !datos.token.startsWith('UAO-')) {
+        msg($('#msg'), false, 'El código escaneado no corresponde a un QR válido de UAO Attendance.');
+        if (statusCamEl) statusCamEl.textContent = 'QR no reconocido';
+        procesandoQr = false;
+        return;
+      }
+
+      if (statusCamEl) statusCamEl.textContent = 'QR detectado · validando...';
+      const ok = await procesarMarcado('QR', datos.pin, datos.token);
+      if (!ok) {
+        if (statusCamEl) statusCamEl.textContent = 'Listo para reintentar';
+        procesandoQr = false;
+      }
+    };
+
+    const escanearFrameQr = () => {
+      if (!camActiva || !videoEl || !canvasEl) return;
+      if (videoEl.readyState >= 2 && videoEl.videoWidth > 0 && typeof window.jsQR === 'function') {
+        const w = Math.min(640, videoEl.videoWidth);
+        const h = Math.round((videoEl.videoHeight / videoEl.videoWidth) * w);
+        canvasEl.width = w;
+        canvasEl.height = h;
+        const ctx = canvasEl.getContext('2d', { willReadFrequently: true });
+        if (ctx) {
+          ctx.drawImage(videoEl, 0, 0, w, h);
+          const imageData = ctx.getImageData(0, 0, w, h);
+          const decoded = window.jsQR(imageData.data, w, h, { inversionAttempts: 'dontInvert' });
+          if (decoded && decoded.data) {
+            manejarContenidoQr(decoded.data);
+            return;
+          }
+        }
+      }
+      camTimer = setTimeout(escanearFrameQr, 150);
+    };
+
+    const iniciarCamaraQr = async () => {
+      if (!videoEl || !canvasEl) return;
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        if (statusCamEl) statusCamEl.textContent = 'Cámara no disponible aquí';
+        msg($('#msg'), false, 'Tu navegador bloqueó la cámara en conexión local HTTP. Escanea el QR directo con la cámara de tu celular o usa «Escanear desde foto / imagen».');
+        return;
+      }
+
+      if (statusCamEl) statusCamEl.textContent = 'Abriendo cámara...';
+      try {
+        try {
+          camStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: { ideal: 'environment' } },
+            audio: false
+          });
+        } catch (_) {
+          camStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        }
+        videoEl.srcObject = camStream;
+        await videoEl.play();
+        camActiva = true;
+        videoEl.style.display = 'block';
+        if (placeholderEl) placeholderEl.style.display = 'none';
+        if (btnCamara) btnCamara.textContent = '⏹ Detener cámara';
+        if ($('#msg')) $('#msg').hidden = true;
+        escanearFrameQr();
+      } catch (err) {
+        detenerCamaraQr();
+        if (statusCamEl) statusCamEl.textContent = 'Permiso de cámara requerido';
+        msg($('#msg'), false, 'No se pudo activar la cámara en el navegador. Permite el acceso, usa «Escanear desde foto / imagen» o apunta con la cámara nativa de tu celular.');
+      }
+    };
+
+    const activarTab = (i, autoIniciarCamara = true) => {
+      if (!tabsModo.length || !secQr || !secPin) return;
+      tabsModo.forEach((x, idx) => x.classList.toggle('on', idx === i));
+      if (i === 0) {
+        detenerCamaraQr();
+        secQr.style.display = 'none';
+        secPin.style.display = 'block';
+      } else {
+        secQr.style.display = 'block';
+        secPin.style.display = 'none';
+        if (autoIniciarCamara && !camActiva && !procesandoQr) {
+          iniciarCamaraQr();
+        }
+      }
+    };
 
     if (tabsModo.length && secQr && secPin) {
       tabsModo.forEach((t, i) => {
-        t.addEventListener('click', () => {
-          tabsModo.forEach(x => x.classList.remove('on'));
-          t.classList.add('on');
-          if (i === 0) {
-            secQr.style.display = 'none';
-            secPin.style.display = 'block';
-          } else {
-            secQr.style.display = 'block';
-            secPin.style.display = 'none';
-          }
-        });
+        t.addEventListener('click', () => activarTab(i, true));
       });
     }
 
@@ -1326,32 +1575,6 @@
       });
     }
 
-    const procesarMarcado = async (modo, pinIngresado) => {
-      const estCod = getEstudianteActivoCodigo();
-
-      if (isApiMode()) {
-        const res = await apiRequest('/api/asistencia/marcar', 'POST', {
-          estudianteCodigo: estCod,
-          pin: pinIngresado,
-          modo: modo === 'QR' ? 'QR' : 'PIN'
-        });
-        if (res) {
-          msg($('#msg'), Boolean(res.ok), res.msg);
-          if (res.ok) {
-            await syncSesionDesdeServidor();
-            setTimeout(() => { location.href = 'inicio.html'; }, 1200);
-          }
-          return;
-        }
-      }
-
-      const v = validarPin(pinIngresado);
-      if (!v.ok) return msg($('#msg'), false, v.msg);
-      const resRegistro = marcarAsistenciaEstudiante(modo === 'QR' ? 'Escaneo QR móvil' : 'PIN de aula', estCod);
-      msg($('#msg'), resRegistro.ok, resRegistro.msg);
-      if (resRegistro.ok) setTimeout(() => { location.href = 'inicio.html'; }, 1200);
-    };
-
     if ($('#confirmar')) {
       $('#confirmar').addEventListener('click', () => {
         const pinIngresado = ds.map(d => d.value).join('');
@@ -1359,12 +1582,75 @@
       });
     }
 
-    if ($('#simqr')) {
-      $('#simqr').addEventListener('click', async () => {
-        await syncSesionDesdeServidor();
-        const p = getPin();
-        procesarMarcado('QR', p.code);
+    if (btnCamara) {
+      btnCamara.addEventListener('click', () => {
+        if (camActiva) {
+          detenerCamaraQr();
+        } else {
+          iniciarCamaraQr();
+        }
       });
+    }
+
+    if (fileQrInput && canvasEl) {
+      fileQrInput.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => {
+          URL.revokeObjectURL(url);
+          const maxDim = 1200;
+          const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+          const w = Math.max(1, Math.round(img.width * scale));
+          const h = Math.max(1, Math.round(img.height * scale));
+          canvasEl.width = w;
+          canvasEl.height = h;
+          const ctx = canvasEl.getContext('2d', { willReadFrequently: true });
+          if (!ctx || typeof window.jsQR !== 'function') {
+            msg($('#msg'), false, 'No se pudo procesar la imagen del código QR.');
+            return;
+          }
+          ctx.drawImage(img, 0, 0, w, h);
+          const imageData = ctx.getImageData(0, 0, w, h);
+          const decoded = window.jsQR(imageData.data, w, h, { inversionAttempts: 'attemptBoth' });
+          if (decoded && decoded.data) {
+            manejarContenidoQr(decoded.data);
+          } else {
+            msg($('#msg'), false, 'No se detectó un código QR legible en la imagen. Acerca el enfoque o mejora la iluminación.');
+          }
+          fileQrInput.value = '';
+        };
+        img.onerror = () => {
+          URL.revokeObjectURL(url);
+          msg($('#msg'), false, 'No se pudo leer la imagen seleccionada.');
+          fileQrInput.value = '';
+        };
+        img.src = url;
+      });
+    }
+
+    window.addEventListener('pagehide', detenerCamaraQr);
+    window.addEventListener('beforeunload', detenerCamaraQr);
+
+    const qrParams = new URLSearchParams(location.search);
+    const qrDesdeUrl = qrParams.get('qr') || '';
+    const pinDesdeUrl = qrParams.get('pin') || '';
+    if (qrDesdeUrl) {
+      const usuarioActual = store.get('usuario_actual', null);
+      const rolActual = store.get('rol_actual', null);
+      if (!usuarioActual || rolActual !== 'estudiante') {
+        const nextParams = new URLSearchParams({ rol: 'estudiante', qr: qrDesdeUrl });
+        if (pinDesdeUrl) nextParams.set('pin', pinDesdeUrl);
+        location.href = `../../index.html?${nextParams.toString()}`;
+      } else {
+        activarTab(1, false);
+        try {
+          history.replaceState({}, '', location.pathname);
+        } catch (_) {}
+        if (statusCamEl) statusCamEl.textContent = 'QR detectado desde cámara · validando...';
+        procesarMarcado('QR', pinDesdeUrl, qrDesdeUrl);
+      }
     }
 
     if ($('#sim-no-matriculado')) {

@@ -4,5 +4,6 @@ database/*.db-wal
 database/*.db-shm
 storage/gcs-bucket-uao-soportes/*_2248332_*
 REFERENCIA_CODIGO.md
+cuentas_docente_estudiante.txt
 .DS_Store
 Thumbs.db
