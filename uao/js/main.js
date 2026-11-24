@@ -1003,6 +1003,12 @@
         badge.textContent = sesionActiva ? '● EN VIVO' : '■ CERRADA';
       }
 
+      const btnCerrar = $('#cerrar-sesion-asistencia');
+      if (btnCerrar) {
+        btnCerrar.textContent = sesionActiva ? 'Cerrar sesión de clase' : 'Activar sesión de clase';
+        btnCerrar.className = sesionActiva ? 'btn sec sm' : 'btn ok sm';
+      }
+
       if ($('#resumen')) {
         $('#resumen').innerHTML = sesionActiva
           ? `Sesión en curso · ${aus.length} ausentes`
@@ -1085,7 +1091,9 @@
     if ($('#cerrar-sesion-asistencia')) {
       $('#cerrar-sesion-asistencia').addEventListener('click', async () => {
         if (!store.get('sesion_activa', true)) {
-          alert('La sesión ya se encuentra cerrada.');
+          if (!confirm('¿Desea volver a activar la sesión de asistencia? Se generará un nuevo código QR y PIN de 60 segundos.')) return;
+          await ejecutarReaperturaSesion();
+          await refrescarDesdeServidorM02();
           return;
         }
         if (!confirm('¿Desea cerrar formalmente la sesión de asistencia? Los estudiantes sin registro pasarán automáticamente al estado «Ausente».')) return;
@@ -1118,6 +1126,31 @@
     return ausentesNuevos;
   }
 
+  async function ejecutarReaperturaSesion() {
+    if (isApiMode()) {
+      const res = await apiRequest('/api/sesion/abrir', 'POST', {});
+      await syncSesionDesdeServidor();
+      if (res && res.ok) return res.restaurados || 0;
+    }
+
+    const r = getRoster();
+    let restaurados = 0;
+    r.forEach(est => {
+      if (est.estado === 'Ausente' && est.medio === 'Cierre de sesión') {
+        est.estado = 'Sin registro';
+        est.hora = null;
+        est.medio = null;
+        restaurados++;
+      }
+    });
+    setRoster(r);
+    store.set('sesion_activa', true);
+    store.set('red_docente_caida', false);
+    nuevoPin();
+    registrarAuditoria('Reapertura de sesión de asistencia', `Sesión reactivada. ${restaurados} estudiante(s) volvieron a Sin registro.`, 'CERRADA', 'ABIERTA');
+    return restaurados;
+  }
+
   if ($('#tabla') && !$('#tabla-riesgo') && !$('#tabla-bitacora')) {
     const badgeMap = { 'Presente': 'b-ok', 'Ausente': 'b-bad', 'Sin registro': 'b-warn' };
 
@@ -1140,6 +1173,12 @@
       if (badgeHeader) {
         badgeHeader.className = 'live-pill' + (sesionActiva ? '' : ' closed');
         badgeHeader.textContent = sesionActiva ? '● EN VIVO' : '■ CERRADA';
+      }
+
+      const btnManualEstado = $('#btn-cierre-manual-pantalla');
+      if (btnManualEstado) {
+        btnManualEstado.textContent = sesionActiva ? 'Finalizar y cerrar sesión' : 'Activar sesión de clase';
+        btnManualEstado.className = sesionActiva ? 'btn danger sm' : 'btn ok sm';
       }
 
       $('#tabla').innerHTML = `
@@ -1244,12 +1283,15 @@
     if ($('#btn-cierre-manual-pantalla')) {
       $('#btn-cierre-manual-pantalla').addEventListener('click', async () => {
         if (!store.get('sesion_activa', true)) {
-          alert('La sesión ya se encuentra formalmente cerrada.');
+          if (!confirm('¿Desea volver a activar la sesión de asistencia? Se generará un nuevo código QR y PIN de 60 segundos.')) return;
+          await ejecutarReaperturaSesion();
+          await cargarM04();
           return;
         }
+        if (!confirm('¿Desea cerrar formalmente la sesión de asistencia? Los estudiantes sin registro pasarán a estado «Ausente».')) return;
         const ausentesNuevos = await ejecutarCierreFormalSesion();
-        pintarM04();
-        alert(`Sesión formalmente cerrada.\n${ausentesNuevos} estudiantes pasaron a estado Ausente.`);
+        await cargarM04();
+        alert(`Sesión cerrada.\n${ausentesNuevos} estudiantes pasaron a estado Ausente.`);
       });
     }
 

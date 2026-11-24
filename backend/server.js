@@ -151,6 +151,18 @@ app.post('/api/sesion/cerrar', (req, res) => {
   return res.json(result);
 });
 
+app.post('/api/sesion/abrir', async (req, res) => {
+  try {
+    const { autor } = req.body || {};
+    const result = dbMod.reabrirSesionAsistencia({ autor });
+    if (!result.ok) return res.status(400).json(result);
+    const sesion = await enriquecerSesionConQr(req, result.sesion);
+    return res.json({ ...result, sesion });
+  } catch (err) {
+    return res.status(500).json({ ok: false, msg: 'No se pudo reactivar la sesión.' });
+  }
+});
+
 app.post('/api/asistencia/marcar', (req, res) => {
   const { estudianteCodigo, pin, tokenQr, modo, autor } = req.body || {};
   const result = dbMod.marcarAsistenciaEstudiante({

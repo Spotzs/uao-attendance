@@ -650,6 +650,51 @@ function cerrarSesionAsistencia({ sesionId = 'SES-ISW1-G01-ACTUAL', autor = 'San
   };
 }
 
+function reabrirSesionAsistencia({ sesionId = 'SES-ISW1-G01-ACTUAL', autor = 'Sandra Lucía Guañarita (Docente)' }) {
+  const ses = db.prepare('SELECT * FROM sesiones WHERE id = ?').get(sesionId);
+  if (!ses) return { ok: false, msg: 'Sesión no encontrada.' };
+
+  const ausCierre = db.prepare(`
+    SELECT id FROM registros_asistencia
+    WHERE sesion_id = ? AND estado = 'Ausente' AND medio_registro = 'Cierre de sesión'
+  `).all(sesionId);
+
+  const restaurarReg = db.prepare(`
+    UPDATE registros_asistencia
+    SET estado = 'Sin registro', hora_registro = NULL, medio_registro = NULL
+    WHERE id = ?
+  `);
+
+  for (const row of ausCierre) {
+    restaurarReg.run(row.id);
+  }
+
+  const nuevoPin = generarPin4();
+  const nuevoQr = generarTokenQr();
+  const nuevoExp = Date.now() + 60000;
+
+  db.prepare(`
+    UPDATE sesiones
+    SET estado = 'ABIERTA', red_caida = 0, pin_actual = ?, token_qr = ?, pin_expira = ?
+    WHERE id = ?
+  `).run(nuevoPin, nuevoQr, nuevoExp, sesionId);
+
+  registrarAuditoria({
+    autor,
+    accion: 'Reapertura de sesión de asistencia',
+    valorAnterior: ses.estado,
+    valorNuevo: 'ABIERTA',
+    detalle: `Sesión reactivada con nuevo QR y PIN de 60 s. ${ausCierre.length} estudiante(s) volvieron a Sin registro.`
+  });
+
+  return {
+    ok: true,
+    restaurados: ausCierre.length,
+    sesion: getSesionActual(sesionId),
+    msg: 'Sesión reactivada exitosamente. Nuevo QR y PIN generados.'
+  };
+}
+
 function actualizarRegistroManualOCorreccion({
   sesionId = 'SES-ISW1-G01-ACTUAL',
   nroLista,
@@ -1330,6 +1375,7 @@ module.exports = {
   getRoster,
   marcarAsistenciaEstudiante,
   cerrarSesionAsistencia,
+  reabrirSesionAsistencia,
   actualizarRegistroManualOCorreccion,
   registrarNovedadSesion,
   getHistorialEstudiante,

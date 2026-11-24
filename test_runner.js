@@ -265,6 +265,19 @@ check(
   JSON.stringify({ qrInvalido, qrVencido, qrOk, qrDoble })
 );
 
+dbMod.cerrarSesionAsistencia({});
+const reabrir = dbMod.reabrirSesionAsistencia({});
+const marcaPostReabrir = dbMod.marcarAsistenciaEstudiante({
+  estudianteCodigo: '2245020',
+  tokenQr: reabrir.sesion.pin.token,
+  modo: 'QR'
+});
+check(
+  'REAPERTURA SESIÓN: Permite volver a activar una sesión cerrada con nuevo QR/PIN y recibir marcaciones',
+  reabrir.ok && reabrir.sesion.sesionActiva && marcaPostReabrir.ok,
+  JSON.stringify({ reabrir: { ok: reabrir.ok, activa: reabrir.sesion && reabrir.sesion.sesionActiva }, marcaPostReabrir })
+);
+
 dbMod.initSchemaAndSeed(true);
 
 console.log('\n===================================================================');
