@@ -49,7 +49,8 @@
 
   hidratarIconos();
 
-  const isApiMode = () => typeof fetch === 'function' && location.protocol !== 'file:';
+  const isStaticHost = () => location.protocol === 'file:' || /\.github\.io$/i.test(location.hostname);
+  const isApiMode = () => typeof fetch === 'function' && !isStaticHost();
 
   const store = {
     get(k, d) {
@@ -123,6 +124,11 @@
   const CUENTAS_SSO_UAO = [
     { user: 'sandra.guanarita', correo: 'sandra.guanarita@uao.edu.co', pass: 'Uao2026*', rol: 'docente', nombre: 'Sandra Lucía Guañarita Fernández', codigo: '1001001' },
     { user: 'juan_se.marin', correo: 'juan_se.marin@uao.edu.co', pass: 'Uao2026*', rol: 'estudiante', nombre: 'Juan Sebastián Marín Restrepo', codigo: '2248332' },
+    { user: 'felipe.barreneche.20', correo: 'felipe.barreneche.20@uao.edu.co', pass: 'Uao2026*', rol: 'estudiante', nombre: 'Felipe Barreneche', codigo: '2245020' },
+    { user: 'manuela.quintero.21', correo: 'manuela.quintero.21@uao.edu.co', pass: 'Uao2026*', rol: 'estudiante', nombre: 'Manuela Quintero', codigo: '2245021' },
+    { user: 'alejandro.beltran.22', correo: 'alejandro.beltran.22@uao.edu.co', pass: 'Uao2026*', rol: 'estudiante', nombre: 'Alejandro Beltrán', codigo: '2245022' },
+    { user: 'juliana.restrepo.24', correo: 'juliana.restrepo.24@uao.edu.co', pass: 'Uao2026*', rol: 'estudiante', nombre: 'Juliana Restrepo', codigo: '2245024' },
+    { user: 'cristian.camilo.ortiz.25', correo: 'cristian.camilo.ortiz.25@uao.edu.co', pass: 'Uao2026*', rol: 'estudiante', nombre: 'Cristian Camilo Ortiz', codigo: '2245025' },
     { user: 'mariana.lopez', correo: 'mariana.lopez@uao.edu.co', pass: 'Uao2026*', rol: 'estudiante', nombre: 'Mariana López Ortiz', codigo: '2248910' },
     { user: 'andres.morales', correo: 'andres.morales@uao.edu.co', pass: 'Uao2026*', rol: 'estudiante', nombre: 'Andrés Felipe Morales', codigo: '2245006' },
     { user: 'sara.castillo', correo: 'sara.castillo@uao.edu.co', pass: 'Uao2026*', rol: 'estudiante', nombre: 'Sara Sofía Castillo', codigo: '2245009' },
@@ -145,7 +151,8 @@
     }
 
     const shortUser = rawUser.replace(/@uao\.edu\.co$/, '');
-    const cuenta = CUENTAS_SSO_UAO.find(c => c.user === shortUser || c.correo === rawUser);
+    const todasLasCuentas = CUENTAS_SSO_UAO.concat(store.get('cuentas_extra', []));
+    const cuenta = todasLasCuentas.find(c => c.user === shortUser || c.correo === rawUser);
     if (!cuenta || cuenta.pass !== rawPass) {
       return { ok: false, msg: 'Usuario o contraseña incorrectos. Verifique sus credenciales institucionales UAO.' };
     }
@@ -272,7 +279,35 @@
     return { ok: true };
   }
 
-  function renderSvgQR(seedText = 'UAO') {
+  function construirUrlQrLocal(pinObj) {
+    const token = typeof pinObj === 'object' && pinObj ? pinObj.token : String(pinObj || 'UAO');
+    const code = typeof pinObj === 'object' && pinObj ? pinObj.code : '';
+    const exp = typeof pinObj === 'object' && pinObj ? pinObj.exp : (Date.now() + 60000);
+    try {
+      const target = new URL('../estudiante/marcar-asistencia.html', location.href);
+      target.searchParams.set('qr', token);
+      if (code) target.searchParams.set('pin', code);
+      if (exp) target.searchParams.set('exp', String(exp));
+      return target.toString();
+    } catch (_) {
+      return token;
+    }
+  }
+
+  function renderSvgQR(seedOrPin = 'UAO') {
+    const qrPayload = typeof seedOrPin === 'object' && seedOrPin ? construirUrlQrLocal(seedOrPin) : String(seedOrPin || 'UAO');
+    if (typeof window.qrcode === 'function') {
+      try {
+        const qr = window.qrcode(0, 'M');
+        qr.addData(qrPayload);
+        qr.make();
+        return qr.createSvgTag({ scalable: true, margin: 2 })
+          .replace(/fill="black"/g, 'fill="#0D1B2A"')
+          .replace(/<svg /, '<svg role="img" aria-label="Código QR de sesión activa" ');
+      } catch (_) {}
+    }
+
+    const seedText = String(qrPayload);
     let hash = 0;
     for (let i = 0; i < seedText.length; i++) {
       hash = ((hash << 5) - hash) + seedText.charCodeAt(i);
@@ -685,6 +720,7 @@
     const urlParams = new URLSearchParams(location.search);
     const qrPendiente = urlParams.get('qr') || '';
     const pinPendiente = urlParams.get('pin') || '';
+    const expPendiente = urlParams.get('exp') || '';
     const rolParam = urlParams.get('rol') || '';
 
     if (!qrPendiente) {
@@ -732,6 +768,7 @@
       if (qrPendiente && rolAutenticado === 'estudiante') {
         const q = new URLSearchParams({ qr: qrPendiente });
         if (pinPendiente) q.set('pin', pinPendiente);
+        if (expPendiente) q.set('exp', expPendiente);
         return `pages/estudiante/marcar-asistencia.html?${q.toString()}`;
       }
       return rutas[rolAutenticado] || rutas[rol];
@@ -810,21 +847,44 @@
         const password = $('#reg-pass') ? $('#reg-pass').value : '';
         const regRol = $('#reg-rol').value;
 
+        if (!nombre || !codigo || !username) {
+          return msg($('#reg-msg'), false, 'Nombre, código y usuario institucional son obligatorios.');
+        }
         if (!password) {
           return msg($('#reg-msg'), false, 'Ingrese una contraseña para la nueva cuenta.');
         }
 
-        const res = await apiRequest('/api/usuarios', 'POST', {
-          nombre, codigo, username, rol: regRol, password
-        });
-        if (!res) {
-          return msg($('#reg-msg'), false, 'No se pudo conectar con el servidor.');
+        if (isApiMode()) {
+          const res = await apiRequest('/api/usuarios', 'POST', {
+            nombre, codigo, username, rol: regRol, password
+          });
+          if (!res) {
+            return msg($('#reg-msg'), false, 'No se pudo conectar con el servidor.');
+          }
+          if (!res.ok) {
+            return msg($('#reg-msg'), false, res.msg);
+          }
+          msg($('#reg-msg'), true, `Usuario ${res.user.correo} (${res.user.codigo}) creado y matriculado. Ya puedes iniciar sesión.`);
+          $('#user').value = res.user.username;
+          $('#pass').value = '';
+          return;
         }
-        if (!res.ok) {
-          return msg($('#reg-msg'), false, res.msg);
+
+        const cleanUser = username.toLowerCase().replace(/@uao\.edu\.co$/, '');
+        const correo = `${cleanUser}@uao.edu.co`;
+        const extras = store.get('cuentas_extra', []);
+        if (CUENTAS_SSO_UAO.concat(extras).some(c => c.user === cleanUser || c.codigo === codigo)) {
+          return msg($('#reg-msg'), false, `Ya existe un usuario con código ${codigo} o usuario ${cleanUser}.`);
         }
-        msg($('#reg-msg'), true, `Usuario ${res.user.correo} (${res.user.codigo}) creado y matriculado. Ya puedes iniciar sesión.`);
-        $('#user').value = res.user.username;
+        extras.push({ user: cleanUser, correo, pass: password, rol: regRol, nombre, codigo });
+        store.set('cuentas_extra', extras);
+        if (regRol === 'estudiante') {
+          const r = getRoster();
+          r.push({ n: r.length + 1, codigo, nombre, iniciales: obtenerIniciales(nombre), estado: 'Sin registro', hora: null, medio: null, novedad: null });
+          setRoster(r);
+        }
+        msg($('#reg-msg'), true, `Usuario ${correo} (${codigo}) creado. Ya puedes iniciar sesión.`);
+        $('#user').value = cleanUser;
         $('#pass').value = '';
       });
     }
@@ -883,7 +943,8 @@
           qrContainer.innerHTML = ultimoQrSvgServidor;
           qrContainer.title = ultimoQrUrlServidor || 'Escanea para registrar asistencia';
         } else {
-          qrContainer.innerHTML = renderSvgQR(p.token);
+          qrContainer.innerHTML = renderSvgQR(p);
+          qrContainer.title = construirUrlQrLocal(p);
         }
         lastQrStateRendered = qrStateKey;
       }
@@ -1428,13 +1489,14 @@
 
     const extraerDatosQr = (raw) => {
       const txt = String(raw || '').trim();
-      if (!txt) return { token: '', pin: '' };
+      if (!txt) return { token: '', pin: '', exp: 0 };
       try {
         if (/^https?:\/\//i.test(txt)) {
           const u = new URL(txt);
           return {
             token: String(u.searchParams.get('qr') || '').trim().toUpperCase(),
-            pin: String(u.searchParams.get('pin') || '').trim()
+            pin: String(u.searchParams.get('pin') || '').trim(),
+            exp: Number(u.searchParams.get('exp') || 0)
           };
         }
       } catch (_) {}
@@ -1443,14 +1505,16 @@
           const parsed = JSON.parse(txt);
           return {
             token: String(parsed.qr || parsed.token || '').trim().toUpperCase(),
-            pin: String(parsed.pin || '').trim()
+            pin: String(parsed.pin || '').trim(),
+            exp: Number(parsed.exp || 0)
           };
         }
       } catch (_) {}
       const match = txt.match(/UAO-[A-Z0-9]+/i);
       return {
         token: match ? match[0].toUpperCase() : '',
-        pin: ''
+        pin: '',
+        exp: 0
       };
     };
 
@@ -1474,7 +1538,7 @@
       if (btnCamara) btnCamara.innerHTML = `${svgIcon('camera', 'sm')} Activar cámara`;
     };
 
-    const procesarMarcado = async (modo, pinIngresado, tokenQr = '') => {
+    const procesarMarcado = async (modo, pinIngresado, tokenQr = '', expQr = 0) => {
       const estCod = getEstudianteActivoCodigo();
 
       if (isApiMode()) {
@@ -1495,10 +1559,19 @@
       }
 
       if (modo === 'QR') {
+        const sesionActiva = store.get('sesion_activa', true);
+        if (!sesionActiva) {
+          msg($('#msg'), false, 'La sesión de asistencia ya fue cerrada por el docente.');
+          return false;
+        }
         const p = getPin();
         const parsed = extraerDatosQr(tokenQr);
-        if (!parsed.token || parsed.token !== p.token) {
-          msg($('#msg'), false, 'Código QR vencido o inválido. Escanea nuevamente.');
+        const token = parsed.token;
+        const expVal = expQr || parsed.exp;
+        const coincideLocal = token && token === p.token && (p.redCaida || Date.now() < p.exp);
+        const vigenteExterno = token && token.startsWith('UAO-') && expVal > 0 && Date.now() < expVal && (expVal - Date.now()) <= 120000;
+        if (!coincideLocal && !vigenteExterno) {
+          msg($('#msg'), false, 'Código QR vencido o inválido. Escanea nuevamente el código proyectado.');
           return false;
         }
       } else {
@@ -1528,7 +1601,7 @@
       }
 
       if (statusCamEl) statusCamEl.textContent = 'QR detectado · validando...';
-      const ok = await procesarMarcado('QR', datos.pin, datos.token);
+      const ok = await procesarMarcado('QR', datos.pin, datos.token, datos.exp);
       if (!ok) {
         if (statusCamEl) statusCamEl.textContent = 'Listo para reintentar';
         procesandoQr = false;
@@ -1693,12 +1766,14 @@
     const qrParams = new URLSearchParams(location.search);
     const qrDesdeUrl = qrParams.get('qr') || '';
     const pinDesdeUrl = qrParams.get('pin') || '';
+    const expDesdeUrl = Number(qrParams.get('exp') || 0);
     if (qrDesdeUrl) {
       const usuarioActual = store.get('usuario_actual', null);
       const rolActual = store.get('rol_actual', null);
       if (!usuarioActual || rolActual !== 'estudiante') {
         const nextParams = new URLSearchParams({ rol: 'estudiante', qr: qrDesdeUrl });
         if (pinDesdeUrl) nextParams.set('pin', pinDesdeUrl);
+        if (expDesdeUrl) nextParams.set('exp', String(expDesdeUrl));
         location.href = `../../index.html?${nextParams.toString()}`;
       } else {
         activarTab(1, false);
@@ -1706,7 +1781,7 @@
           history.replaceState({}, '', location.pathname);
         } catch (_) {}
         if (statusCamEl) statusCamEl.textContent = 'QR detectado desde cámara · validando...';
-        procesarMarcado('QR', pinDesdeUrl, qrDesdeUrl);
+        procesarMarcado('QR', pinDesdeUrl, qrDesdeUrl, expDesdeUrl);
       }
     }
 

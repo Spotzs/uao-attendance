@@ -3,6 +3,9 @@
   "version": "1.2.0",
   "description": "UAO Attendance - Sistema de Control de Asistencia con Registro Multiple y Portal Docente (Modelo C4 Completo)",
   "main": "backend/server.js",
+  "engines": {
+    "node": ">=22.5.0"
+  },
   "scripts": {
     "start": "node backend/server.js",
     "test": "node test_runner.js"
@@ -10,6 +13,7 @@
   "dependencies": {
     "express": "^5.1.0",
     "jsqr": "^1.4.0",
-    "qrcode": "^1.5.4"
+    "qrcode": "^1.5.4",
+    "qrcode-generator": "^2.0.4"
   }
 }
